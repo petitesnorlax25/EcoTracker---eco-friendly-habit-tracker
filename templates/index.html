@@ -1,0 +1,4236 @@
+{% extends "base.html" %} {% block content %}
+<style>
+  /* CSS Custom Properties for Theming */
+  :root {
+    /* Light Theme Colors */
+    --eco-primary: #2d5016;
+    --eco-secondary: #4a7c59;
+    --eco-accent: #7fb069;
+    --eco-light: #a7c957;
+    --eco-success: #28a745;
+    --eco-warning: #ffc107;
+    --eco-danger: #dc3545;
+
+    /* Light Theme Backgrounds */
+    --bg-primary: #f8fffe;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f0f9f0;
+    --bg-gradient: linear-gradient(
+      135deg,
+      #f8fffe 0%,
+      #e8f5e8 50%,
+      #f0f9f0 100%
+    );
+    --bg-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a7c957' fill-opacity='0.03'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+
+    /* Light Theme Text */
+    --text-primary: #2d5016;
+    --text-secondary: #4a7c59;
+    --text-muted: #6c757d;
+    --text-inverse: #ffffff;
+
+    /* Light Theme Cards */
+    --card-bg: #ffffff;
+    --card-border: rgba(127, 176, 105, 0.1);
+    --card-shadow: 0 8px 32px rgba(45, 80, 22, 0.08);
+    --card-shadow-hover: 0 16px 48px rgba(45, 80, 22, 0.12);
+
+    /* Light Theme Interactive Elements */
+    --input-bg: #f8f9fa;
+    --input-border: #e9ecef;
+    --input-focus: var(--eco-accent);
+    --button-primary: var(--eco-accent);
+    --button-secondary: #f8f9fa;
+
+    /* Light Theme Overlays */
+    --overlay-light: rgba(255, 255, 255, 0.1);
+    --overlay-dark: rgba(0, 0, 0, 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.18);
+  }
+
+  /* Dark Theme Colors */
+  [data-theme="dark"] {
+    --eco-primary: #a7c957;
+    --eco-secondary: #7fb069;
+    --eco-accent: #9bb85c;
+    --eco-light: #b8d46a;
+    --eco-success: #4caf50;
+    --eco-warning: #ff9800;
+    --eco-danger: #f44336;
+
+    /* Dark Theme Backgrounds */
+    --bg-primary: #0f1419;
+    --bg-secondary: #1a1f2e;
+    --bg-tertiary: #252b3a;
+    --bg-gradient: linear-gradient(
+      135deg,
+      #0f1419 0%,
+      #1a1f2e 50%,
+      #252b3a 100%
+    );
+    --bg-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a7c957' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+
+    /* Dark Theme Text */
+    --text-primary: #e8f5e8;
+    --text-secondary: #a7c957;
+    --text-muted: #8a9ba8;
+    --text-inverse: #0f1419;
+
+    /* Dark Theme Cards */
+    --card-bg: #1a1f2e;
+    --card-border: rgba(167, 201, 87, 0.15);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.4);
+
+    /* Dark Theme Interactive Elements */
+    --input-bg: #252b3a;
+    --input-border: #3a4553;
+    --input-focus: var(--eco-accent);
+    --button-primary: var(--eco-accent);
+    --button-secondary: #252b3a;
+
+    /* Dark Theme Overlays */
+    --overlay-light: rgba(255, 255, 255, 0.05);
+    --overlay-dark: rgba(0, 0, 0, 0.3);
+    --glass-bg: rgba(26, 31, 46, 0.7);
+    --glass-border: rgba(167, 201, 87, 0.2);
+  }
+
+  /* Base Styles - Optimized transitions */
+  .transition-enabled {
+    transition: background-color 0.3s ease, color 0.3s ease,
+      border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* Apply transitions only to specific elements */
+  .eco-card,
+  .habit-item,
+  .analytics-item,
+  .btn-eco-primary,
+  .btn-eco-secondary {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body {
+    background: var(--bg-gradient), var(--bg-pattern);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: var(--text-primary);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      sans-serif;
+    line-height: 1.6;
+  }
+
+  /* Enhanced Dashboard Container */
+  .dashboard-container {
+    padding: 2rem 0;
+    position: relative;
+  }
+
+  .dashboard-container::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-pattern);
+    opacity: 0.5;
+    z-index: -1;
+    animation: float 30s infinite linear;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateX(-50px) translateY(-50px);
+    }
+    100% {
+      transform: translateX(0px) translateY(0px);
+    }
+  }
+
+  .section {
+    scroll-margin-top: 100px;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  /* Enhanced Welcome Header */
+  .welcome-header {
+    background: linear-gradient(
+      135deg,
+      var(--eco-primary) 0%,
+      var(--eco-secondary) 100%
+    );
+    color: var(--text-inverse);
+    padding: 3rem 2rem;
+    border-radius: 24px;
+    margin-bottom: 2rem;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+  }
+
+  .welcome-header::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: var(--bg-pattern);
+    opacity: 0.1;
+    animation: float 20s infinite linear;
+  }
+
+  .welcome-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+  }
+
+  .welcome-header h1 {
+    font-size: 2.75rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(135deg, #ffffff, #f0f9f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .welcome-header .subtitle {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 2rem;
+    font-weight: 400;
+  }
+
+  /* Enhanced Analytics Section */
+  .analytics-section {
+    background: var(--glass-bg);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem 0 1.5rem;
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    position: relative;
+    z-index: 2;
+  }
+
+  .analytics-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0.95;
+  }
+
+  .analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .analytics-item {
+    text-align: center;
+    background: var(--overlay-light);
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .analytics-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--overlay-light),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  .analytics-item:hover::before {
+    left: 100%;
+  }
+
+  .analytics-item:hover {
+    background: var(--overlay-light);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 40px var(--overlay-dark);
+  }
+
+  .analytics-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    color: var(--text-inverse);
+    text-shadow: 0 2px 8px var(--overlay-dark);
+    background: linear-gradient(135deg, #ffffff, var(--eco-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .analytics-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  /* Enhanced Cards */
+  .eco-card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+  }
+
+  .eco-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--eco-accent), var(--eco-light));
+    border-radius: 24px 24px 0 0;
+  }
+
+  .eco-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: var(--eco-accent);
+  }
+
+  .card-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--eco-accent), var(--eco-light));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    color: var(--text-inverse);
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 24px rgba(127, 176, 105, 0.3);
+    position: relative;
+  }
+
+  .card-icon::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, var(--eco-accent), var(--eco-light));
+    border-radius: 22px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .eco-card:hover .card-icon::after {
+    opacity: 0.2;
+  }
+
+  /* Enhanced Progress Container */
+  .progress-container {
+    background: var(--bg-tertiary);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem 0;
+    border: 1px solid var(--card-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-pattern);
+    opacity: 0.02;
+  }
+
+  .custom-progress {
+    height: 24px;
+    background: var(--input-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    margin: 1.5rem 0;
+    border: 1px solid var(--input-border);
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--eco-accent), var(--eco-light));
+    border-radius: 12px;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  }
+
+  .progress-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    animation: shimmer 2.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 700;
+    color: var(--text-inverse);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    font-size: 0.9rem;
+  }
+
+  /* Enhanced Filter Controls */
+  .filter-controls {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(20px);
+  }
+
+  .filter-input {
+    background: var(--input-bg);
+    border: 2px solid var(--input-border);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-primary);
+    width: 100%;
+  }
+
+  .filter-input:focus {
+    outline: none;
+    border-color: var(--input-focus);
+    background: var(--card-bg);
+    box-shadow: 0 0 0 0.25rem rgba(127, 176, 105, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .filter-input:hover {
+    border-color: var(--eco-light);
+    background: var(--card-bg);
+  }
+
+  .filter-input::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* Enhanced Search and Date Wrappers */
+  .search-wrapper,
+  .date-wrapper {
+    position: relative;
+  }
+
+  .search-wrapper::before {
+    content: "\f002";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--eco-secondary);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .date-wrapper::before {
+    content: "\f073";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--eco-secondary);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .search-wrapper .filter-input,
+  .date-wrapper .filter-input {
+    padding-left: 3rem;
+  }
+
+  /* Enhanced Clear Filters Button */
+  .clear-filters {
+    background: transparent;
+    border: 2px solid var(--input-border);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 1rem 1.5rem;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .clear-filters:hover {
+    background: var(--input-bg);
+    border-color: var(--eco-accent);
+    color: var(--eco-primary);
+    transform: translateY(-2px);
+  }
+
+  /* Enhanced Habit Items */
+  .habit-list {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+
+  .habit-list::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .habit-list::-webkit-scrollbar-track {
+    background: var(--input-bg);
+    border-radius: 10px;
+  }
+
+  .habit-list::-webkit-scrollbar-thumb {
+    background: var(--eco-accent);
+    border-radius: 10px;
+  }
+
+  .habit-list::-webkit-scrollbar-thumb:hover {
+    background: var(--eco-secondary);
+  }
+
+  .habit-item {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    border-left: 5px solid var(--eco-accent);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    backdrop-filter: blur(20px);
+  }
+
+  .habit-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--eco-accent), var(--eco-light));
+    transition: width 0.3s ease;
+  }
+
+  .habit-item:hover {
+    background: var(--bg-tertiary);
+    transform: translateX(12px) translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+    border-left-color: var(--eco-light);
+  }
+
+  .habit-item:hover::before {
+    width: 8px;
+  }
+
+  .habit-content {
+    flex: 1;
+  }
+
+  .habit-date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .habit-date::before {
+    content: "\f073";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 0.75rem;
+    color: var(--eco-accent);
+  }
+
+  .habit-category {
+    font-size: 0.9rem;
+    color: var(--eco-light);
+    font-weight: 600;
+    background: var(--overlay-light);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+    text-transform: capitalize;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+  }
+
+  /* History metadata styles */
+  .habit-metadata {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .habit-logged-time {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .habit-logged-time::before {
+    content: "\f017";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 0.7rem;
+  }
+
+  .habit-updated-time {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .habit-updated-time::before {
+    content: "\f044";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 0.7rem;
+  }
+
+  /* Enhanced Habit Actions */
+  .habit-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .habit-item:hover .habit-actions {
+    opacity: 1;
+  }
+
+  .btn-habit-edit,
+  .btn-habit-delete {
+    background: transparent;
+    border: 2px solid transparent;
+    color: var(--text-secondary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+  }
+
+  .btn-habit-edit:hover {
+    background: var(--overlay-light);
+    border-color: var(--eco-accent);
+    color: var(--eco-accent);
+    transform: scale(1.15);
+    box-shadow: 0 4px 16px rgba(127, 176, 105, 0.3);
+  }
+
+  .btn-habit-delete:hover {
+    background: rgba(244, 67, 54, 0.1);
+    border-color: var(--eco-danger);
+    color: var(--eco-danger);
+    transform: scale(1.15);
+    box-shadow: 0 4px 16px rgba(244, 67, 54, 0.3);
+  }
+
+  /* Enhanced Buttons */
+  .btn-eco-primary {
+    background: linear-gradient(135deg, var(--eco-accent), var(--eco-light));
+    border: none;
+    color: var(--text-inverse);
+    font-weight: 700;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 4px 16px rgba(127, 176, 105, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-eco-primary::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  .btn-eco-primary:hover::before {
+    left: 100%;
+  }
+
+  .btn-eco-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(127, 176, 105, 0.4);
+    color: var(--text-inverse);
+    text-decoration: none;
+  }
+
+  .btn-eco-secondary {
+    background: transparent;
+    border: 2px solid var(--eco-accent);
+    color: var(--eco-accent);
+    font-weight: 700;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    backdrop-filter: blur(20px);
+  }
+
+  .btn-eco-secondary:hover {
+    background: var(--eco-accent);
+    color: var(--text-inverse);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(127, 176, 105, 0.4);
+    text-decoration: none;
+  }
+
+  .btn-edit-goal {
+    background: var(--overlay-light);
+    border: 2px solid var(--eco-accent);
+    color: var(--eco-accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 25px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+  }
+
+  .btn-edit-goal:hover {
+    background: var(--eco-accent);
+    color: var(--text-inverse);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(127, 176, 105, 0.4);
+    border-color: var(--eco-accent);
+  }
+
+  /* Enhanced Progress Toggle */
+  .progress-toggle {
+    display: flex;
+    background: var(--input-bg);
+    border-radius: 50px;
+    padding: 0.4rem;
+    gap: 0.4rem;
+    border: 1px solid var(--input-border);
+    backdrop-filter: blur(20px);
+  }
+
+  .toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 25px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .toggle-btn:hover {
+    background: var(--overlay-light);
+    color: var(--text-primary);
+  }
+
+  .toggle-btn.active {
+    background: linear-gradient(135deg, var(--eco-accent), var(--eco-light));
+    color: var(--text-inverse);
+    box-shadow: 0 4px 16px rgba(127, 176, 105, 0.3);
+    transform: scale(1.02);
+  }
+
+  /* Enhanced Stats */
+  .stats-number {
+    font-size: 2.75rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    line-height: 1;
+    background: linear-gradient(135deg, var(--eco-accent), var(--eco-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stats-label {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Enhanced Modals */
+  .eco-modal .modal-content {
+    border: none;
+    border-radius: 24px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+  }
+
+  .eco-modal .modal-header {
+    background: linear-gradient(
+      135deg,
+      var(--eco-primary) 0%,
+      var(--eco-secondary) 100%
+    );
+    color: var(--text-inverse);
+    padding: 2.5rem 2.5rem 2rem;
+    border: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .eco-modal .modal-header::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: var(--bg-pattern);
+    opacity: 0.1;
+    animation: float 15s infinite linear;
+  }
+
+  .eco-modal .modal-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .modal-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--overlay-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    backdrop-filter: blur(10px);
+    animation: pulse 2s infinite;
+  }
+
+  .eco-modal .modal-body {
+    padding: 2.5rem;
+    background: var(--card-bg);
+  }
+
+  .eco-form-group {
+    margin-bottom: 2rem;
+    position: relative;
+  }
+
+  .eco-form-label {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .eco-form-control {
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    border: 2px solid var(--input-border);
+    border-radius: 16px;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--input-bg);
+    color: var(--text-primary);
+  }
+
+  .eco-form-control:focus {
+    outline: none;
+    border-color: var(--input-focus);
+    background: var(--card-bg);
+    box-shadow: 0 0 0 0.25rem rgba(127, 176, 105, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .eco-form-control.with-icon {
+    padding-left: 3.5rem;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Guest CTA Enhancement */
+  .guest-cta {
+    text-align: center;
+    padding: 6rem 3rem;
+    background: var(--card-bg);
+    border-radius: 24px;
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .guest-cta::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: var(--bg-pattern);
+    opacity: 0.02;
+    animation: float 25s infinite linear;
+  }
+
+  .guest-icon {
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, var(--eco-accent), var(--eco-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    color: var(--text-inverse);
+    margin: 0 auto 3rem;
+    animation: pulse 2s infinite;
+    box-shadow: 0 16px 48px rgba(127, 176, 105, 0.3);
+    position: relative;
+    z-index: 2;
+  }
+
+  .guest-cta h1 {
+    color: var(--text-primary);
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(
+      135deg,
+      var(--eco-primary),
+      var(--eco-secondary)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .guest-cta .lead {
+    color: var(--text-secondary);
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+    line-height: 1.6;
+  }
+
+  .guest-cta p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Enhanced Feature Cards */
+  .feature-cards {
+    margin-top: 4rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .feature-card {
+    background: var(--overlay-light);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--eco-accent), var(--eco-light));
+    border-radius: 20px 20px 0 0;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--card-shadow-hover);
+    background: var(--card-bg);
+  }
+
+  .feature-card i {
+    font-size: 3rem;
+    color: var(--eco-accent);
+    margin-bottom: 1.5rem;
+    display: block;
+    transition: all 0.3s ease;
+  }
+
+  .feature-card:hover i {
+    transform: scale(1.1);
+    color: var(--eco-light);
+  }
+
+  .feature-card h5 {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-card p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Results Counter Enhancement */
+  .results-counter {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--overlay-light);
+    border-radius: 25px;
+    display: inline-block;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+  }
+
+  /* Daily Checklist Styles */
+  .checklist-container {
+    background: var(--bg-tertiary);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--card-border);
+  }
+
+  .checklist-header {
+    margin-bottom: 2rem;
+  }
+
+  .checklist-date {
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .checklist-progress {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .checklist-progress-bar {
+    height: 12px;
+    background: var(--input-bg);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 1rem;
+    border: 1px solid var(--input-border);
+  }
+
+  .checklist-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--eco-accent), var(--eco-light));
+    border-radius: 6px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .checklist-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .checklist-item {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.25rem;
+    border: 2px solid var(--input-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .checklist-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--input-border);
+    transition: all 0.3s ease;
+  }
+
+  .checklist-item:hover {
+    border-color: var(--eco-accent);
+    transform: translateX(8px);
+    box-shadow: var(--card-shadow);
+  }
+
+  .checklist-item:hover::before {
+    background: var(--eco-accent);
+    width: 6px;
+  }
+
+  .checklist-item.checked {
+    background: var(--overlay-light);
+    border-color: var(--eco-success);
+    transform: scale(0.98);
+  }
+
+  .checklist-item.checked::before {
+    background: var(--eco-success);
+    width: 6px;
+  }
+
+  .checklist-item.checking {
+    animation: checkingPulse 0.6s ease;
+  }
+
+  @keyframes checkingPulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(0.98);
+    }
+  }
+
+  .checklist-checkbox {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .checklist-checkbox input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  .checklist-checkbox label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    background: var(--input-bg);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .checklist-checkbox label i {
+    font-size: 0.9rem;
+    color: var(--text-inverse);
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .checklist-checkbox input:checked + label {
+    background: linear-gradient(135deg, var(--eco-success), var(--eco-accent));
+    border-color: var(--eco-success);
+    transform: scale(1.1);
+  }
+
+  .checklist-checkbox input:checked + label i {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .checklist-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .checklist-text {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .checklist-item.checked .checklist-text {
+    text-decoration: line-through;
+    opacity: 0.8;
+  }
+
+  .checklist-category {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: capitalize;
+    font-weight: 500;
+  }
+
+  .checklist-status {
+    flex-shrink: 0;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .checklist-item.checked .checklist-status {
+    opacity: 1;
+    color: var(--eco-success);
+    animation: statusAppear 0.5s ease;
+  }
+
+  @keyframes statusAppear {
+    0% {
+      opacity: 0;
+      transform: scale(0) rotate(-180deg);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+  }
+
+  /* Quick Add Section */
+  .quick-add-section {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 2px dashed var(--input-border);
+    transition: all 0.3s ease;
+  }
+
+  .quick-add-section:hover {
+    border-color: var(--eco-accent);
+    background: var(--overlay-light);
+  }
+
+  .quick-add-header {
+    margin-bottom: 1rem;
+  }
+
+  .quick-add-header h5 {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .quick-add-form .input-group {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .quick-add-form .form-control {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--input-border);
+    border-radius: 12px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+  }
+
+  .quick-add-form .form-control:focus {
+    outline: none;
+    border-color: var(--eco-accent);
+    background: var(--card-bg);
+    box-shadow: 0 0 0 0.2rem rgba(127, 176, 105, 0.15);
+  }
+
+  .quick-add-form .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+  }
+
+  /* Enhanced No Results and Empty States */
+  .no-results,
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-secondary);
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 2px dashed var(--input-border);
+  }
+
+  .no-results i,
+  .empty-state i {
+    font-size: 4rem;
+    color: var(--eco-accent);
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+  }
+
+  .no-results h5,
+  .empty-state h5 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .welcome-header {
+      padding: 2rem 1.5rem;
+    }
+
+    .welcome-header h1 {
+      font-size: 2.25rem;
+    }
+
+    .analytics-section {
+      padding: 1.5rem;
+      margin: 1.5rem 0 1rem;
+    }
+
+    .analytics-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .analytics-item {
+      padding: 1.25rem 0.75rem;
+    }
+
+    .analytics-number {
+      font-size: 2rem;
+    }
+
+    .eco-card {
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .dashboard-container {
+      padding: 1rem 0;
+    }
+
+    .filter-controls {
+      padding: 1.5rem;
+    }
+
+    .habit-item {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+
+    .habit-actions {
+      flex-direction: row;
+      justify-content: flex-end;
+      opacity: 1;
+    }
+
+    .habit-item:hover {
+      transform: translateX(8px) translateY(-2px);
+    }
+
+    .habit-list {
+      max-height: 350px;
+    }
+
+    .eco-modal .modal-dialog {
+      margin: 1rem;
+      max-width: none;
+    }
+
+    .eco-modal .modal-header {
+      padding: 2rem 2rem 1.5rem;
+    }
+
+    .eco-modal .modal-body {
+      padding: 2rem;
+    }
+
+    .guest-cta {
+      padding: 4rem 2rem;
+    }
+
+    .guest-cta h1 {
+      font-size: 2.5rem;
+    }
+
+    .guest-icon {
+      width: 120px;
+      height: 120px;
+      font-size: 3rem;
+    }
+
+    .feature-card {
+      padding: 2rem 1.5rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .analytics-grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .progress-toggle {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toggle-btn {
+      justify-content: center;
+      padding: 0.75rem;
+    }
+
+    .clear-filters {
+      padding: 0.75rem 1rem;
+    }
+
+    .guest-cta h1 {
+      font-size: 2rem;
+    }
+
+    .guest-cta .lead {
+      font-size: 1.1rem;
+    }
+  }
+
+  /* Mobile Responsiveness for Charts */
+  .charts-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  @media (max-width: 576px) {
+    .charts-container {
+      grid-template-columns: 1fr;
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 250px;
+    }
+  }
+  
+  /* Loading and Animation States */
+  .btn-eco-primary.loading {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .btn-eco-primary.loading i {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .habit-item.updated {
+    animation: updateSuccess 0.8s ease;
+  }
+
+  @keyframes updateSuccess {
+    0% {
+      background: var(--card-bg);
+    }
+    50% {
+      background: var(--overlay-light);
+    }
+    100% {
+      background: var(--card-bg);
+    }
+  }
+
+  .stats-number.updating {
+    transform: scale(1.1);
+    color: var(--eco-accent);
+  }
+
+  /* Dark theme text fixes */
+  [data-theme="dark"] .text-muted {
+    color: var(--text-muted) !important;
+  }
+
+  [data-theme="dark"] .badge {
+    background-color: var(--eco-accent) !important;
+    color: var(--text-inverse) !important;
+  }
+
+  [data-theme="dark"] .modal-footer .btn-secondary {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+  }
+
+  [data-theme="dark"] .modal-footer .btn-primary {
+    background-color: var(--eco-accent);
+    border-color: var(--eco-accent);
+    color: var(--text-inverse);
+  }
+
+  [data-theme="dark"] .alert-light {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+  }
+
+  [data-theme="dark"] .btn-close-white {
+    filter: invert(1);
+  }
+  /* Graphs Section - Clean styles */
+  .graphs-section {
+    margin: 30px 0;
+    background: var(--bg-tertiary);
+    border-radius: 20px;
+    padding: 25px;
+    border: 1px solid var(--card-border);
+  }
+
+  .graphs-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 25px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .graphs-title i {
+    color: var(--eco-accent);
+  }
+
+  .graphs-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 20px;
+  }
+
+  .graph-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--card-border);
+  }
+
+  .graph-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-shadow-hover);
+  }
+
+  .graph-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 300px;
+  }
+
+  /* Responsive graphs */
+  @media (max-width: 768px) {
+    .graphs-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Checklist Action Buttons */
+  .checklist-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .checklist-item:hover .checklist-actions {
+    opacity: 1;
+  }
+
+  .btn-checklist-edit,
+  .btn-checklist-delete {
+    background: transparent;
+    border: 2px solid transparent;
+    color: var(--text-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+  }
+
+  .btn-checklist-edit:hover {
+    background: var(--overlay-light);
+    border-color: var(--eco-accent);
+    color: var(--eco-accent);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(127, 176, 105, 0.3);
+  }
+
+  .btn-checklist-delete:hover {
+    background: rgba(244, 67, 54, 0.1);
+    border-color: var(--eco-danger);
+    color: var(--eco-danger);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+  }
+
+  /* Mobile responsive adjustments for checklist */
+  @media (max-width: 768px) {
+    .checklist-actions {
+      flex-direction: row;
+      opacity: 1;
+      justify-content: flex-end;
+    }
+
+    .btn-checklist-edit,
+    .btn-checklist-delete {
+      width: 36px;
+      height: 36px;
+      font-size: 0.9rem;
+    }
+  }
+
+
+</style>
+
+<div class="dashboard-container">
+  <div class="container">
+    {% if username %}
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="section">
+      <div class="welcome-header">
+        <div class="header-content">
+          <h1><i class="fas fa-leaf me-3"></i>Welcome to Your Eco Dashboard</h1>
+          <p class="subtitle">
+            👋 Hello, EcoWarrior! Let's make a difference together.
+          </p>
+
+          <!-- Analytics Section -->
+          <!-- Analytics Section -->
+          <div class="analytics-section">
+            <div class="analytics-title">
+              <i class="fas fa-chart-bar"></i>
+              Your Eco Impact
+            </div>
+            <div class="analytics-grid">
+              <div class="analytics-item">
+                <div class="analytics-number">{{ habits_today or 0 }}</div>
+                <div class="analytics-label">
+                  <i class="fas fa-calendar-day"></i>
+                  Today
+                </div>
+              </div>
+              <div class="analytics-item">
+                <div class="analytics-number">{{ habits_this_week or 0 }}</div>
+                <div class="analytics-label">
+                  <i class="fas fa-calendar-week"></i>
+                  This Week
+                </div>
+              </div>
+              <div class="analytics-item">
+                <div class="analytics-number">{{ habits_this_month or 0 }}</div>
+                <div class="analytics-label">
+                  <i class="fas fa-calendar-alt"></i>
+                  This Month
+                </div>
+              </div>
+              <div class="analytics-item">
+                <div class="analytics-number">{{ streak or 0 }}</div>
+                <div class="analytics-label">
+                  <i class="fas fa-fire"></i>
+                  Days Streak
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- New Graphs Section -->
+          <div class="graphs-section">
+            <div class="graphs-title">
+              <i class="fas fa-chart-line"></i>
+              Habit Completion Over Time
+            </div>
+            <div class="graphs-container">
+              <div class="graph-card">
+                <div class="graph-title">Weekly Progress</div>
+                <div class="chart-container">
+                  <canvas id="weeklyChart"></canvas>
+                </div>
+              </div>
+              <div class="graph-card">
+                <div class="graph-title">Monthly Trends</div>
+                <div class="chart-container">
+                  <canvas id="monthlyChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress Section -->
+    <section id="progress" class="section">
+      <div class="eco-card">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <div class="d-flex align-items-center">
+            <div class="card-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="ms-3">
+              <h3 class="mb-1" id="progressTitle">🌱 This Week's Progress</h3>
+              <p class="text-muted mb-0">Keep up the great work!</p>
+            </div>
+          </div>
+
+          <!-- Progress Period Toggle -->
+          <div class="progress-toggle">
+            <button
+              type="button"
+              class="toggle-btn active"
+              data-period="week"
+              id="weekBtn"
+            >
+              <i class="fas fa-calendar-week"></i>
+              <span>This Week</span>
+            </button>
+            <button
+              type="button"
+              class="toggle-btn"
+              data-period="today"
+              id="todayBtn"
+            >
+              <i class="fas fa-calendar-day"></i>
+              <span>Today</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="stats-label">Eco-Actions Completed</span>
+            <span class="badge bg-success" id="progressBadge"
+              >{{ habits_this_week }} / {{ goals.weekly_goal }}</span
+            >
+            <!-- Two Separate Buttons for Editing Goals -->
+            <button
+              id="editWeeklyGoalBtn"
+              class="btn-edit-goal"
+              data-bs-toggle="modal"
+              data-bs-target="#editGoalModal"
+            >
+              <i class="fas fa-edit"></i>
+              Edit Weekly Goal
+            </button>
+            <button
+              id="editDailyGoalBtn"
+              class="btn-edit-goal d-none"
+              data-bs-toggle="modal"
+              data-bs-target="#editDailyGoalModal"
+            >
+              <i class="fas fa-edit"></i>
+              Edit Daily Goal
+            </button>
+          </div>
+
+          <div class="custom-progress">
+            <div
+              class="progress-fill"
+              id="progressFill"
+              style="width: {{ (habits_this_week / goals.weekly_goal * 100) if goals.weekly_goal > 0 else 0 }}%;"
+            >
+              <div class="progress-text" id="progressText">
+                {{ habits_this_week }} / {{ goals.weekly_goal }}
+              </div>
+            </div>
+          </div>
+
+          <div class="row text-center mt-4">
+            <div class="col-4">
+              <div class="stats-number" id="completedCount">
+                {{ habits_this_week }}
+              </div>
+              <div class="stats-label">Completed</div>
+            </div>
+            <div class="col-4">
+              <div class="stats-number" id="remainingCount">
+                {{ goals.weekly_goal - habits_this_week if goals.weekly_goal >
+                habits_this_week else 0 }}
+              </div>
+              <div class="stats-label">Remaining</div>
+            </div>
+            <div class="col-4">
+              <div class="stats-number" id="progressPercentage">
+                {{ ((habits_this_week / goals.weekly_goal * 100) if
+                goals.weekly_goal > 0 else 0)|round|int }}%
+              </div>
+              <div class="stats-label">Progress</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Daily Checklist Section -->
+    <section id="checklist" class="section">
+      <div class="eco-card">
+        <div class="d-flex align-items-center mb-4">
+          <div class="card-icon">
+            <i class="fas fa-check-square"></i>
+          </div>
+          <div class="ms-3">
+            <h3 class="mb-1">✅ Today's Eco Checklist</h3>
+            <p class="text-muted mb-0">
+              Check off your eco-friendly actions for today
+            </p>
+          </div>
+        </div>
+
+        <div class="checklist-container">
+          <div class="checklist-header">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="checklist-date">
+                <i class="fas fa-calendar-day"></i>
+                {{ current_date }}
+              </span>
+              <span class="checklist-progress">
+                <span id="checkedCount">{{ completed_today|length }}</span> / {{
+                predefined_habits|length }} completed
+              </span>
+            </div>
+
+            <div class="checklist-progress-bar">
+              <div
+                class="checklist-fill"
+                id="checklistFill"
+                style="width: {{ (completed_today|length / predefined_habits|length * 100) if predefined_habits else 0 }}%;"
+              ></div>
+            </div>
+          </div>
+
+          <div
+            class="checklist-grid"
+            data-habit-count="{{ predefined_habits|length }}"
+          >
+            {% for habit in predefined_habits %}
+            <div
+              class="checklist-item {{ 'checked' if habit.action in completed_today else '' }}"
+              data-habit="{{ habit.action }}"
+              data-habit-id="{{ habit.id }}"
+            >
+              <div class="checklist-checkbox">
+                <input type="checkbox" id="habit-{{ habit.id }}" {{ 'checked' if
+                habit.action in completed_today else '' }}
+                onchange="toggleHabit('{{habit.action|e}}', this)">
+                <label for="habit-{{ habit.id }}">
+                  <i class="fas fa-check"></i>
+                </label>
+              </div>
+              <div class="checklist-content">
+                <span class="checklist-text">{{ habit.action }}</span>
+                <div class="checklist-category">
+                  {{ habit.category or 'other' }}
+                </div>
+                <div class="habit-date">{{ habit.date }}</div>
+              </div>
+              <div class="checklist-status">
+                <i class="fas fa-check-circle"></i>
+              </div>
+
+              <!-- Checklist Action Buttons -->
+              <div class="checklist-actions">
+                <button
+                  type="button"
+                  class="btn-checklist-edit"
+                  onclick="editChecklistHabit('{{ habit.id }}', '{{ habit.action }}', '{{ habit.category or '' }}')"
+                  title="Edit Habit"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn-checklist-delete"
+                  onclick="deleteChecklistHabit('{{ habit.id }}', '{{ habit.action }}')"
+                  title="Delete Habit"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Quick Add Custom Habit -->
+          <div class="quick-add-section">
+            <div class="quick-add-header">
+              <h5><i class="fas fa-plus-circle"></i> Add Custom Habit</h5>
+            </div>
+            <div class="quick-add-form">
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <input
+                    type="text"
+                    id="customHabitInput"
+                    class="form-control"
+                    placeholder="Type a custom eco-friendly action..."
+                    maxlength="100"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <select id="customHabitCategory" class="form-control">
+  <option value="">Select category</option>
+  <option value="Energy Saving">🔋 Energy Saving</option>
+  <option value="Water Conservation">💧 Water Conservation</option>
+  <option value="Eco Transport">🚲 Eco Transport</option>
+  <option value="Waste Reduction">♻️ Waste Reduction</option>
+  <option value="Recycling">🗑️ Recycling</option>
+  <option value="Sustainable Food">🌱 Sustainable Food</option>
+  <option value="Reusables & Alternatives">🛍️ Reusables & Alternatives</option>
+  <option value="Gardening / Composting">🌻 Gardening / Composting</option>
+  <option value="Mindful Consumption">🛒 Mindful Consumption</option>
+  <option value="Eco Cleaning Products">🧼 Eco Cleaning Products</option>
+  <option value="Advocacy / Awareness">📣 Advocacy / Awareness</option>
+  <option value="Sustainable Shopping">👕 Sustainable Shopping</option>
+  <option value="Nature & Biodiversity">🐝 Nature & Biodiversity</option>
+  <option value="Other">🌍 Other</option>
+</select>
+
+                </div>
+                <div class="col-md-2">
+                  <button
+                    type="button"
+                    class="btn btn-success w-100"
+                    onclick="addCustomHabit()"
+                  >
+                    <i class="fas fa-plus"></i>
+                    Add & Check
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Habits Section - NOW SHOWS DATA FROM HISTORY -->
+    <section id="habits" class="section">
+      <div class="eco-card">
+        <div class="d-flex align-items-center mb-4">
+          <div class="card-icon">
+            <i class="fas fa-history"></i>
+          </div>
+          <div class="ms-3">
+            <h3 class="mb-1">📅 Your Recent Actions</h3>
+            <p class="text-muted mb-0">
+              Track your eco-friendly journey (from complete history)
+            </p>
+          </div>
+        </div>
+
+        <!-- Enhanced Filter Controls -->
+        <div class="filter-controls">
+          <div class="row g-3">
+            <div class="col-md-5">
+              <div class="search-wrapper">
+                <input
+                  type="text"
+                  id="searchInput"
+                  class="filter-input"
+                  placeholder="Search your habits..."
+                />
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="date-wrapper">
+                <input type="date" id="dateFilter" class="filter-input" />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <button type="button" class="clear-filters" id="clearFilters">
+                <i class="fas fa-times"></i>
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export Controls -->
+        {% if recent_habits %}
+
+        {% endif %}
+
+        <!-- Results Counter -->
+        <div class="results-counter" id="resultsCounter" style="display: none">
+          Showing <span id="resultCount">0</span> habits
+        </div>
+
+        {% if recent_habits %}
+        <div class="habit-list" id="habitList">
+          {% for habit in recent_habits %}
+          <div
+            class="habit-item"
+            data-date="{{ habit.date }}"
+            data-action="{{ habit.action|lower }}"
+            data-category="{{ habit.category|lower }}"
+            data-habit-id="{{ habit.id }}"
+          >
+            <div class="habit-content">
+              <div class="habit-date">{{ habit.date }}</div>
+              <div class="habit-action">{{ habit.action }}</div>
+              <div class="habit-category">
+                {{ habit.category or 'No category' }}
+              </div>
+              {% if habit.logged_at %}
+              <div class="habit-metadata">
+                <div class="habit-logged-time">
+                  Logged {{ habit.logged_at[:10] }}
+                </div>
+                {% if habit.updated_at %}
+                <div class="habit-updated-time">
+                  Updated {{ habit.updated_at[:10] }}
+                </div>
+                {% endif %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="habit-actions">
+              <button
+                type="button"
+                class="btn-habit-delete"
+                onclick="deleteHabitFromHistory('{{ habit.id }}', '{{ habit.action }}')"
+                title="Delete from History"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- No Results State -->
+        <div class="no-results" id="noResults" style="display: none">
+          <i class="fas fa-search"></i>
+          <h5>No habits found</h5>
+          <p>Try adjusting your search or date filter</p>
+        </div>
+
+        {% else %}
+        <div class="empty-state">
+          <i class="fas fa-seedling"></i>
+          <h5>No habits logged yet</h5>
+          <p>Start your eco-friendly journey by logging your first habit!</p>
+          <button
+            type="button"
+            class="btn-eco-primary mt-3"
+            data-bs-toggle="modal"
+            data-bs-target="#logHabitModal"
+          >
+            <i class="fas fa-plus"></i>
+            Log Your First Habit
+          </button>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Delete Confirmation Modal -->
+    <div
+      class="modal fade"
+      id="deleteHabitModal"
+      tabindex="-1"
+      aria-labelledby="deleteHabitModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="deleteHabitModalLabel">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              Confirm Delete
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-3">Are you sure you want to delete this habit?</p>
+            <div class="alert alert-light border">
+              <strong id="deleteHabitText"></strong>
+            </div>
+            <p class="text-muted small mb-0">This action cannot be undone.</p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              <i class="fas fa-times me-1"></i>
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="confirmDeleteBtn"
+              onclick="confirmHistoryDelete()"
+            >
+              <i class="fas fa-trash me-1"></i>
+              Delete Habit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Goal Modals -->
+    <div
+      class="modal fade"
+      id="editGoalModal"
+      tabindex="-1"
+      aria-labelledby="editGoalModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <form method="POST" action="{{ url_for('update_goal') }}">
+          <input type="hidden" name="goal_type" value="weekly" />
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editGoalModalLabel">
+                Edit Weekly Goal
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <label for="newGoal" class="form-label">New Weekly Goal</label>
+              <input
+                type="number"
+                class="form-control"
+                name="new_goal"
+                id="newGoal"
+                min="1"
+                max="{{ predefined_habits|length * 7 }}"
+                value="{{ goals.weekly_goal }}"
+                required
+              />
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary">Save Goal</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="editDailyGoalModal"
+      tabindex="-1"
+      aria-labelledby="editDailyGoalModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <form method="POST" action="{{ url_for('update_goal') }}">
+          <input type="hidden" name="goal_type" value="daily" />
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editDailyGoalModalLabel">
+                Edit Daily Goal
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <label for="newDailyGoal" class="form-label"
+                >New Daily Goal</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                name="new_goal"
+                id="newDailyGoal"
+                min="1"
+                max="{{ predefined_habits|length }}"
+                value="{{ goals.daily_goal }}"
+                required
+              />
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary">Save Goal</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Checklist Habit Modal -->
+    <div
+      class="modal fade eco-modal"
+      id="editChecklistHabitModal"
+      tabindex="-1"
+      aria-labelledby="editChecklistHabitModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="editChecklistHabitForm">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editChecklistHabitModalLabel">
+                Edit Habit
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="editChecklistHabitId" name="habit_id" />
+              <div class="eco-form-group">
+                <label for="editChecklistHabitAction" class="eco-form-label"
+                  >Habit Action</label
+                >
+                <input
+                  type="text"
+                  id="editChecklistHabitAction"
+                  name="action"
+                  class="eco-form-control"
+                  required
+                />
+              </div>
+              <div class="eco-form-group">
+                <label for="editChecklistHabitCategory" class="eco-form-label"
+                  >Category</label
+                >
+                <select
+                  id="editChecklistHabitCategory"
+                  name="category"
+                  class="eco-form-control"
+                >
+                  <option value="">Select category</option>
+  <option value="Energy Saving">🔋 Energy Saving</option>
+  <option value="Water Conservation">💧 Water Conservation</option>
+  <option value="Eco Transport">🚲 Eco Transport</option>
+  <option value="Waste Reduction">♻️ Waste Reduction</option>
+  <option value="Recycling">🗑️ Recycling</option>
+  <option value="Sustainable Food">🌱 Sustainable Food</option>
+  <option value="Reusables & Alternatives">🛍️ Reusables & Alternatives</option>
+  <option value="Gardening / Composting">🌻 Gardening / Composting</option>
+  <option value="Mindful Consumption">🛒 Mindful Consumption</option>
+  <option value="Eco Cleaning Products">🧼 Eco Cleaning Products</option>
+  <option value="Advocacy / Awareness">📣 Advocacy / Awareness</option>
+  <option value="Sustainable Shopping">👕 Sustainable Shopping</option>
+  <option value="Nature & Biodiversity">🐝 Nature & Biodiversity</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn-eco-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn-eco-primary">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Checklist Habit Modal -->
+    <div
+      class="modal fade"
+      id="deleteChecklistHabitModal"
+      tabindex="-1"
+      aria-labelledby="deleteChecklistHabitModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="deleteChecklistHabitModalLabel">
+              Confirm Delete
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Are you sure you want to delete this habit from your checklist?
+            </p>
+            <strong><span id="deleteChecklistHabitText"></span></strong>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="confirmDeleteChecklistBtn"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% else %}
+    <!-- Guest Welcome -->
+    <div class="guest-cta">
+      <div class="guest-icon">
+        <i class="fas fa-leaf"></i>
+      </div>
+      <h1 class="mb-4">Start Your Eco-Friendly Journey Today</h1>
+      <p class="lead mb-4">
+        Track your daily eco-friendly actions and help make our planet greener!
+        🌍
+      </p>
+      <p class="mb-4">
+        Join thousands of eco-warriors making a positive impact every day
+        through simple, sustainable habits.
+      </p>
+
+      <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+        <button
+          type="button"
+          class="btn-eco-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#registerModal"
+        >
+          <i class="fas fa-user-plus"></i>
+          Get Started - Register
+        </button>
+        <button
+          type="button"
+          class="btn-eco-secondary"
+          data-bs-toggle="modal"
+          data-bs-target="#loginModal"
+        >
+          <i class="fas fa-sign-in-alt"></i>
+          Already have an account? Login
+        </button>
+      </div>
+
+      <div class="feature-cards">
+        <div class="row mt-5">
+          <div class="col-md-6">
+            <div class="feature-card">
+              <i class="fas fa-chart-line mb-3"></i>
+              <h5>Track Your Progress</h5>
+              <p>
+                Monitor your eco-friendly habits with detailed analytics and
+                visual progress tracking. See your positive impact grow over
+                time.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="feature-card">
+              <i class="fas fa-users mb-3"></i>
+              <h5>Join Our Community</h5>
+              <p>
+                Connect with like-minded eco-warriors from around the world.
+                Share tips, celebrate achievements, and inspire each other.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div
+      class="modal fade eco-modal"
+      id="loginModal"
+      tabindex="-1"
+      aria-labelledby="loginModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{{ url_for('login') }}" id="loginForm">
+            <div class="modal-header">
+              <h5 class="modal-title" id="loginModalLabel">
+                <div class="modal-icon">
+                  <i class="fas fa-sign-in-alt"></i>
+                </div>
+                Welcome Back!
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+
+            <div class="modal-body">
+              <div class="eco-form-group">
+                <label for="loginUsername" class="eco-form-label">
+                  <i class="fas fa-user"></i>
+                  Username
+                </label>
+                <div class="input-group-eco">
+                  <input
+                    type="text"
+                    class="eco-form-control with-icon"
+                    id="loginUsername"
+                    name="username"
+                    placeholder="Enter your username"
+                    required
+                  />
+                  <i class="fas fa-user input-icon"></i>
+                </div>
+              </div>
+
+              <div class="eco-form-group">
+                <label for="loginPassword" class="eco-form-label">
+                  <i class="fas fa-lock"></i>
+                  Password
+                </label>
+                <div class="input-group-eco">
+                  <input
+                    type="password"
+                    class="eco-form-control with-icon"
+                    id="loginPassword"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <i class="fas fa-lock input-icon"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn-eco-secondary"
+                data-bs-dismiss="modal"
+              >
+                <i class="fas fa-times me-1"></i>
+                Cancel
+              </button>
+              <button type="submit" class="btn-eco-primary" id="loginBtn">
+                <i class="fas fa-sign-in-alt me-1"></i>
+                Login
+              </button>
+            </div>
+          </form>
+
+          <div class="text-center pb-3">
+            <p class="text-muted mb-0">
+              Don't have an account?
+              <a
+                href="#"
+                class="text-decoration-none"
+                style="color: var(--eco-accent)"
+                onclick="switchToRegister()"
+                >Register here</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div
+      class="modal fade eco-modal"
+      id="registerModal"
+      tabindex="-1"
+      aria-labelledby="registerModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form
+            method="POST"
+            action="{{ url_for('register') }}"
+            id="registerForm"
+          >
+            <div class="modal-header">
+              <h5 class="modal-title" id="registerModalLabel">
+                <div class="modal-icon">
+                  <i class="fas fa-user-plus"></i>
+                </div>
+                Join the Eco Community!
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+
+            <div class="modal-body">
+              <div class="eco-form-group">
+                <label for="registerUsername" class="eco-form-label">
+                  <i class="fas fa-user"></i>
+                  Username
+                </label>
+                <div class="input-group-eco">
+                  <input
+                    type="text"
+                    class="eco-form-control with-icon"
+                    id="registerUsername"
+                    name="username"
+                    placeholder="Choose a username"
+                    required
+                  />
+                  <i class="fas fa-user input-icon"></i>
+                </div>
+              </div>
+
+              <div class="eco-form-group">
+                <label for="registerPassword" class="eco-form-label">
+                  <i class="fas fa-lock"></i>
+                  Password
+                </label>
+                <div class="input-group-eco">
+                  <input
+                    type="password"
+                    class="eco-form-control with-icon"
+                    id="registerPassword"
+                    name="password"
+                    placeholder="Create a secure password"
+                    required
+                  />
+                  <i class="fas fa-lock input-icon"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn-eco-secondary"
+                data-bs-dismiss="modal"
+              >
+                <i class="fas fa-times me-1"></i>
+                Cancel
+              </button>
+              <button type="submit" class="btn-eco-primary" id="registerBtn">
+                <i class="fas fa-user-plus me-1"></i>
+                Create Account
+              </button>
+            </div>
+          </form>
+
+          <div class="text-center pb-3">
+            <p class="text-muted mb-0">
+              Already have an account?
+              <a
+                href="#"
+                class="text-decoration-none"
+                style="color: var(--eco-accent)"
+                onclick="switchToLogin()"
+                >Login here</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- JavaScript for enhanced functionality -->
+<script>
+  // Scroll to checklist function
+  function scrollToChecklist() {
+      const checklistSection = document.getElementById('checklist');
+      if (checklistSection) {
+          checklistSection.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+          });
+      }
+  }
+
+  // Switch between login and register modals with proper error handling
+  function switchToRegister() {
+      try {
+          const loginModalEl = document.getElementById('loginModal');
+          const registerModalEl = document.getElementById('registerModal');
+
+          if (!loginModalEl || !registerModalEl) {
+              console.error('Modal elements not found');
+              return;
+          }
+
+          // Close login modal first and wait for it to be completely hidden
+          const loginModal = bootstrap.Modal.getInstance(loginModalEl) || new bootstrap.Modal(loginModalEl);
+
+          // Force immediate cleanup and show register modal
+          loginModal.hide();
+
+          // Aggressively clean up and show new modal
+          setTimeout(() => {
+              forceCleanupAndShow(registerModalEl);
+          }, 150);
+
+      } catch (error) {
+          console.error('Error switching to register modal:', error);
+          forceCleanupAndShow(document.getElementById('registerModal'));
+      }
+  }
+
+  function switchToLogin() {
+      try {
+          const registerModalEl = document.getElementById('registerModal');
+          const loginModalEl = document.getElementById('loginModal');
+
+          if (!registerModalEl || !loginModalEl) {
+              console.error('Modal elements not found');
+              return;
+          }
+
+          // Close register modal first and wait for it to be completely hidden
+          const registerModal = bootstrap.Modal.getInstance(registerModalEl) || new bootstrap.Modal(registerModalEl);
+
+          // Force immediate cleanup and show login modal
+          registerModal.hide();
+
+          // Aggressively clean up and show new modal
+          setTimeout(() => {
+              forceCleanupAndShow(loginModalEl);
+          }, 150);
+
+      } catch (error) {
+          console.error('Error switching to login modal:', error);
+          forceCleanupAndShow(document.getElementById('loginModal'));
+      }
+  }
+
+  // Aggressive cleanup and modal show function
+  function forceCleanupAndShow(modalElement) {
+      if (!modalElement) return;
+
+      // Force cleanup multiple times to ensure it works
+      for (let i = 0; i < 3; i++) {
+          setTimeout(() => {
+              cleanupModalBackdrops();
+          }, i * 50);
+      }
+
+      // Show the modal after cleanup
+      setTimeout(() => {
+          try {
+              const modal = new bootstrap.Modal(modalElement, {
+                  backdrop: 'static', // Use static backdrop to prevent clicking outside
+                  keyboard: true,
+                  focus: true
+              });
+              modal.show();
+          } catch (error) {
+              console.error('Error showing modal:', error);
+              // Final fallback - force show without Bootstrap
+              modalElement.style.display = 'block';
+              modalElement.classList.add('show');
+              document.body.classList.add('modal-open');
+          }
+      }, 200);
+  }
+
+  // Helper function to clean up modal backdrops and body classes
+  function cleanupModalBackdrops() {
+      // Remove any stuck modal backdrops
+      document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+          backdrop.remove();
+      });
+
+      // Reset body classes and styles
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+  }
+
+  // Fallback cleanup for when modals get stuck
+  function fallbackModalCleanup() {
+      cleanupModalBackdrops();
+
+      // Hide all modals
+      document.querySelectorAll('.modal').forEach(modal => {
+          modal.classList.remove('show');
+          modal.style.display = 'none';
+          modal.setAttribute('aria-hidden', 'true');
+          modal.removeAttribute('aria-modal');
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+      // Progress data for dynamic switching
+      const progressData = {
+          today: {
+              count: {{ habits_today or 0 }},
+              goal: {{ goals.daily_goal or 3 }},
+              title: "🌱 Today's Progress"
+          },
+          week: {
+              count: {{ habits_this_week or 0 }},
+              goal: {{ goals.weekly_goal or 10 }},
+              title: "🌱 This Week's Progress"
+          }
+      };
+
+      // DOM elements
+      const todayBtn = document.getElementById('todayBtn');
+      const weekBtn = document.getElementById('weekBtn');
+      const progressTitle = document.getElementById('progressTitle');
+      const progressBadge = document.getElementById('progressBadge');
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+      const completedCount = document.getElementById('completedCount');
+      const remainingCount = document.getElementById('remainingCount');
+      const progressPercentage = document.getElementById('progressPercentage');
+      const editWeeklyGoalBtn = document.getElementById('editWeeklyGoalBtn');
+      const editDailyGoalBtn = document.getElementById('editDailyGoalBtn');
+
+      function updateProgress(period) {
+          const data = progressData[period];
+          const percentage = data.goal > 0 ? Math.round((data.count / data.goal) * 100) : 0;
+          const remaining = Math.max(0, data.goal - data.count);
+
+          // Animation class
+          [completedCount, remainingCount, progressPercentage].forEach(el => {
+              if (el) el.classList.add('updating');
+          });
+
+          setTimeout(() => {
+              if (progressTitle) progressTitle.textContent = data.title;
+              if (progressBadge) progressBadge.textContent = `${data.count} / ${data.goal}`;
+              if (progressFill) progressFill.style.width = `${percentage}%`;
+              if (progressText) progressText.textContent = `${data.count} / ${data.goal}`;
+              if (completedCount) completedCount.textContent = data.count;
+              if (remainingCount) remainingCount.textContent = remaining;
+              if (progressPercentage) progressPercentage.textContent = `${percentage}%`;
+
+              // Show correct edit button
+              if (period === 'today') {
+                  if (editDailyGoalBtn) editDailyGoalBtn.classList.remove('d-none');
+                  if (editWeeklyGoalBtn) editWeeklyGoalBtn.classList.add('d-none');
+              } else {
+                  if (editWeeklyGoalBtn) editWeeklyGoalBtn.classList.remove('d-none');
+                  if (editDailyGoalBtn) editDailyGoalBtn.classList.add('d-none');
+              }
+
+              // Remove animation
+              [completedCount, remainingCount, progressPercentage].forEach(el => {
+                  if (el) el.classList.remove('updating');
+              });
+          }, 150);
+      }
+
+      function setActiveButton(activeBtn, inactiveBtn) {
+          if (activeBtn) activeBtn.classList.add('active');
+          if (inactiveBtn) inactiveBtn.classList.remove('active');
+      }
+
+      // Event listeners for progress toggle
+      if (todayBtn) {
+          todayBtn.addEventListener('click', function() {
+              setActiveButton(todayBtn, weekBtn);
+              updateProgress('today');
+          });
+      }
+
+      if (weekBtn) {
+          weekBtn.addEventListener('click', function() {
+              setActiveButton(weekBtn, todayBtn);
+              updateProgress('week');
+          });
+      }
+
+      // Initialize with week view (default)
+      updateProgress('week');
+
+      // Enhanced filtering functionality
+      const searchInput = document.getElementById('searchInput');
+      const dateFilter = document.getElementById('dateFilter');
+      const habitItems = document.querySelectorAll('.habit-item');
+      const clearFilters = document.getElementById('clearFilters');
+      const resultsCounter = document.getElementById('resultsCounter');
+      const resultCount = document.getElementById('resultCount');
+      const noResults = document.getElementById('noResults');
+
+      function filterHabits() {
+          const searchText = searchInput ? searchInput.value.toLowerCase() : '';
+          const selectedDate = dateFilter ? dateFilter.value : '';
+          let visibleCount = 0;
+
+          habitItems.forEach(item => {
+              const action = item.getAttribute('data-action') || '';
+              const category = item.getAttribute('data-category') || '';
+              const date = item.getAttribute('data-date') || '';
+
+              const matchesSearch = !searchText || action.includes(searchText) || category.includes(searchText);
+              const matchesDate = !selectedDate || date === selectedDate;
+
+              if (matchesSearch && matchesDate) {
+                  item.style.display = 'flex';
+                  visibleCount++;
+              } else {
+                  item.style.display = 'none';
+              }
+          });
+
+          // Update results counter
+          if (resultsCounter && resultCount) {
+              if (searchText || selectedDate) {
+                  resultsCounter.style.display = 'block';
+                  resultCount.textContent = visibleCount;
+              } else {
+                  resultsCounter.style.display = 'none';
+              }
+          }
+
+          // Show/hide no results message
+          if (noResults) {
+              if (visibleCount === 0 && habitItems.length > 0) {
+                  noResults.style.display = 'block';
+              } else {
+                  noResults.style.display = 'none';
+              }
+          }
+      }
+
+      // Clear filters function
+      function clearAllFilters() {
+          if (searchInput) {
+              searchInput.value = '';
+              searchInput.classList.remove('filter-active');
+          }
+          if (dateFilter) {
+              dateFilter.value = '';
+              dateFilter.classList.remove('filter-active');
+          }
+          filterHabits();
+      }
+
+      // Event listeners for filtering
+      if (searchInput) {
+          searchInput.addEventListener('input', function() {
+              filterHabits();
+              this.classList.toggle('filter-active', this.value !== '');
+          });
+      }
+
+      if (dateFilter) {
+          dateFilter.addEventListener('change', function() {
+              filterHabits();
+              this.classList.toggle('filter-active', this.value !== '');
+          });
+      }
+
+      if (clearFilters) {
+          clearFilters.addEventListener('click', clearAllFilters);
+      }
+
+      // Form handling for modals
+      const habitForm = document.getElementById('habitForm');
+      const saveBtn = document.getElementById('saveBtn');
+      const logHabitModal = document.getElementById('logHabitModal');
+
+      if (habitForm && saveBtn) {
+          habitForm.addEventListener('submit', function(e) {
+              saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Saving...';
+              saveBtn.disabled = true;
+              setTimeout(() => {
+                  saveBtn.innerHTML = '<i class="fas fa-check me-1"></i>Save Habit';
+                  saveBtn.disabled = false;
+              }, 3000);
+          });
+      }
+
+      // Reset form when modal is closed
+      if (logHabitModal && habitForm) {
+          logHabitModal.addEventListener('hidden.bs.modal', function() {
+              habitForm.reset();
+              if (saveBtn) {
+                  saveBtn.innerHTML = '<i class="fas fa-check me-1"></i>Save Habit';
+                  saveBtn.disabled = false;
+              }
+              // Reset date to current date
+              const dateInput = document.getElementById('date');
+              if (dateInput) {
+                  const today = new Date().toISOString().split('T')[0];
+                  dateInput.value = today;
+              }
+          });
+
+          // Auto-focus on habit description when modal opens
+          logHabitModal.addEventListener('shown.bs.modal', function() {
+              const actionInput = document.getElementById('action');
+              if (actionInput) actionInput.focus();
+          });
+      }
+
+      // Edit form handling
+      const editForm = document.getElementById('editHabitForm');
+      const updateBtn = document.getElementById('updateBtn');
+      const editModal = document.getElementById('editHabitModal');
+
+      if (editForm && updateBtn) {
+          editForm.addEventListener('submit', function(e) {
+              updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Updating...';
+              updateBtn.disabled = true;
+              updateBtn.classList.add('loading');
+              setTimeout(() => {
+                  updateBtn.innerHTML = '<i class="fas fa-save me-1"></i>Update Habit';
+                  updateBtn.disabled = false;
+                  updateBtn.classList.remove('loading');
+              }, 3000);
+          });
+      }
+
+      // Reset edit form when modal is closed
+      if (editModal && editForm) {
+          editModal.addEventListener('hidden.bs.modal', function() {
+              editForm.reset();
+              if (updateBtn) {
+                  updateBtn.innerHTML = '<i class="fas fa-save me-1"></i>Update Habit';
+                  updateBtn.disabled = false;
+                  updateBtn.classList.remove('loading');
+              }
+          });
+
+          // Auto-focus on habit description when edit modal opens
+          editModal.addEventListener('shown.bs.modal', function() {
+              const editActionInput = document.getElementById('editAction');
+              if (editActionInput) editActionInput.focus();
+          });
+      }
+
+      // Login form handling
+      const loginForm = document.getElementById('loginForm');
+      const loginBtn = document.getElementById('loginBtn');
+      const loginModal = document.getElementById('loginModal');
+
+      if (loginForm && loginBtn) {
+          loginForm.addEventListener('submit', function(e) {
+              loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Logging in...';
+              loginBtn.disabled = true;
+              setTimeout(() => {
+                  loginBtn.innerHTML = '<i class="fas fa-sign-in-alt me-1"></i>Login';
+                  loginBtn.disabled = false;
+              }, 3000);
+          });
+      }
+
+      // Register form handling
+      const registerForm = document.getElementById('registerForm');
+      const registerBtn = document.getElementById('registerBtn');
+      const registerModal = document.getElementById('registerModal');
+
+      if (registerForm && registerBtn) {
+          registerForm.addEventListener('submit', function(e) {
+              registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Creating Account...';
+              registerBtn.disabled = true;
+              setTimeout(() => {
+                  registerBtn.innerHTML = '<i class="fas fa-user-plus me-1"></i>Create Account';
+                  registerBtn.disabled = false;
+              }, 3000);
+          });
+      }
+
+      // Reset login form when modal is closed
+      if (loginModal && loginForm) {
+          loginModal.addEventListener('hidden.bs.modal', function() {
+              loginForm.reset();
+              if (loginBtn) {
+                  loginBtn.innerHTML = '<i class="fas fa-sign-in-alt me-1"></i>Login';
+                  loginBtn.disabled = false;
+              }
+          });
+
+          // Auto-focus on username when login modal opens
+          loginModal.addEventListener('shown.bs.modal', function() {
+              const usernameInput = document.getElementById('loginUsername');
+              if (usernameInput) usernameInput.focus();
+          });
+      }
+
+      // Reset register form when modal is closed
+      if (registerModal && registerForm) {
+          registerModal.addEventListener('hidden.bs.modal', function() {
+              registerForm.reset();
+              if (registerBtn) {
+                  registerBtn.innerHTML = '<i class="fas fa-user-plus me-1"></i>Create Account';
+                  registerBtn.disabled = false;
+              }
+          });
+
+          // Auto-focus on username when register modal opens
+          registerModal.addEventListener('shown.bs.modal', function() {
+              const usernameInput = document.getElementById('registerUsername');
+              if (usernameInput) usernameInput.focus();
+          });
+      }
+
+      // Character counter for habit description
+      const actionInput = document.getElementById('action');
+      if (actionInput) {
+          actionInput.addEventListener('input', function() {
+              const maxLength = 200;
+              const currentLength = this.value.length;
+              if (currentLength > maxLength * 0.8) {
+                  this.style.borderColor = currentLength >= maxLength ? 'var(--eco-danger)' : 'var(--eco-warning)';
+              } else {
+                  this.style.borderColor = 'var(--eco-accent)';
+              }
+          });
+      }
+  });
+
+
+  // Toggle habit function for checklist
+  async function toggleHabit(habitName, checkbox) {
+      const checklistItem = checkbox.closest('.checklist-item');
+      checklistItem.classList.add('checking');
+
+      // Store the original state in case we need to revert
+      const originalChecked = checkbox.checked;
+      const originalItemState = checklistItem.classList.contains('checked');
+
+      try {
+          const response = await fetch('/toggle_habit', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  habit_name: habitName
+              })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+              // Update UI based on backend response
+              if (data.checked) {
+                  checklistItem.classList.add('checked');
+                  checkbox.checked = true;
+              } else {
+                  checklistItem.classList.remove('checked');
+                  checkbox.checked = false;
+              }
+
+              // Update progress and analytics
+              updateChecklistProgress();
+              updateAnalyticsFromData(data);
+
+              showToast(data.checked ? 'Habit checked!' : 'Habit unchecked!', 'success');
+
+              // 🚨 Check for goal completion!
+              if (data.checked) {
+                  const reachedDaily = data.habits_today >= data.daily_goal && data.daily_goal > 0;
+                  const reachedWeekly = data.habits_this_week >= data.weekly_goal && data.weekly_goal > 0;
+
+                if (reachedDaily) {
+      setTimeout(() => {
+          Swal.fire({
+              title: '🎉 Daily Goal Reached!',
+              text: "You've reached your daily eco goal!",
+              icon: 'success',
+              confirmButtonText: 'Nice!',
+              timer: 3000,
+              timerProgressBar: true
+          });
+      }, 500);
+  }
+
+  if (reachedWeekly) {
+      setTimeout(() => {
+          Swal.fire({
+              title: '🌟 Weekly Goal Reached!',
+              text: "You've hit your weekly eco goal!",
+              icon: 'success',
+              confirmButtonText: 'Awesome!',
+              timer: 3000,
+              timerProgressBar: true
+          });
+      }, 500);
+  }
+
+              }
+
+          } else {
+              // Revert to original state on error
+              checkbox.checked = originalChecked;
+              if (originalItemState) {
+                  checklistItem.classList.add('checked');
+              } else {
+                  checklistItem.classList.remove('checked');
+              }
+              showToast(data.error || 'Error updating habit', 'error');
+          }
+      } catch (error) {
+          console.error('Error:', error);
+          // Revert to original state on network error
+          checkbox.checked = originalChecked;
+          if (originalItemState) {
+              checklistItem.classList.add('checked');
+          } else {
+              checklistItem.classList.remove('checked');
+          }
+          showToast('Network error', 'error');
+      } finally {
+          setTimeout(() => {
+              checklistItem.classList.remove('checking');
+          }, 600);
+      }
+  }
+
+  // Add custom habit function
+  async function addCustomHabit() {
+      const input = document.getElementById('customHabitInput');
+      const categorySelect = document.getElementById('customHabitCategory');
+      const habitName = input.value.trim();
+      const category = categorySelect.value;
+
+      if (!habitName) {
+          showToast('Please enter a habit description', 'warning');
+          return;
+      }
+
+      if (habitName.length > 100) {
+          showToast('Habit description too long', 'warning');
+          return;
+      }
+
+      try {
+          const response = await fetch('/add_custom_habit', {
+
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  habit_name: habitName,
+                  category: category || 'other'
+              })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+              input.value = '';
+              categorySelect.value = '';
+              showToast('Custom habit added and checked!', 'success');
+
+              // Update analytics
+              if (data.analytics) {
+                  updateAnalyticsDisplay(data.analytics);
+              }
+
+              // Update progress
+              updateChecklistProgress();
+
+              // Update the page dynamically instead of using location.reload()
+              setTimeout(() => {
+                  updateDashboardDynamically(data);
+              }, 1500);
+          } else {
+              showToast('Error adding custom habit', 'error');
+          }
+      } catch (error) {
+          console.error('Error:', error);
+          showToast('Network error', 'error');
+      }
+  }
+
+  // Update checklist progress
+  function updateChecklistProgress() {
+      const checkedItems = document.querySelectorAll('.checklist-item.checked').length;
+      const totalItems = document.querySelectorAll('.checklist-item').length;
+      const percentage = totalItems > 0 ? (checkedItems / totalItems) * 100 : 0;
+
+      const checkedCount = document.getElementById('checkedCount');
+      const checklistFill = document.getElementById('checklistFill');
+
+      if (checkedCount) {
+          checkedCount.textContent = checkedItems;
+          checkedCount.classList.add('updating');
+          setTimeout(() => checkedCount.classList.remove('updating'), 300);
+      }
+
+      if (checklistFill) {
+          checklistFill.style.width = `${percentage}%`;
+      }
+  }
+
+  // Update analytics display
+  function updateAnalyticsDisplay(analytics) {
+      const elements = {
+          'habits_today': analytics.habits_today,
+          'habits_this_week': analytics.habits_this_week,
+          'habits_this_month': analytics.habits_this_month
+      };
+
+      Object.entries(elements).forEach(([key, value]) => {
+          const element = document.querySelector(`[data-analytics="${key}"]`);
+          if (element) {
+              element.textContent = value;
+              element.classList.add('updating');
+              setTimeout(() => element.classList.remove('updating'), 300);
+          }
+      });
+  }
+
+  // Update analytics from backend data (for toggle_habit response)
+  function updateAnalyticsFromData(data) {
+      // Update analytics numbers in the header section
+      const analyticsNumbers = document.querySelectorAll('.analytics-number');
+      if (analyticsNumbers.length >= 4) {
+          analyticsNumbers[0].textContent = data.habits_today || 0;
+          analyticsNumbers[1].textContent = data.habits_this_week || 0;
+          analyticsNumbers[2].textContent = data.habits_this_month || 0;
+          // Keep streak as is since it's not provided in toggle response
+      }
+
+      // Update progress section if it's in today mode
+      const todayBtn = document.getElementById('todayBtn');
+      const weekBtn = document.getElementById('weekBtn');
+
+      if (todayBtn && todayBtn.classList.contains('active')) {
+          updateProgressDisplay(data.habits_today, data.daily_goal, 'today');
+      } else if (weekBtn && weekBtn.classList.contains('active')) {
+          updateProgressDisplay(data.habits_this_week, data.weekly_goal, 'week');
+      }
+  }
+
+  // Helper function to update progress display
+  function updateProgressDisplay(count, goal, period) {
+      const progressBadge = document.getElementById('progressBadge');
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+      const completedCount = document.getElementById('completedCount');
+      const remainingCount = document.getElementById('remainingCount');
+      const progressPercentage = document.getElementById('progressPercentage');
+
+      const percentage = goal > 0 ? Math.round((count / goal) * 100) : 0;
+      const remaining = Math.max(0, goal - count);
+
+      if (progressBadge) progressBadge.textContent = `${count} / ${goal}`;
+      if (progressFill) progressFill.style.width = `${percentage}%`;
+      if (progressText) progressText.textContent = `${count} / ${goal}`;
+      if (completedCount) {
+          completedCount.textContent = count;
+          completedCount.classList.add('updating');
+          setTimeout(() => completedCount.classList.remove('updating'), 300);
+      }
+      if (remainingCount) {
+          remainingCount.textContent = remaining;
+          remainingCount.classList.add('updating');
+          setTimeout(() => remainingCount.classList.remove('updating'), 300);
+      }
+      if (progressPercentage) {
+          progressPercentage.textContent = `${percentage}%`;
+          progressPercentage.classList.add('updating');
+          setTimeout(() => progressPercentage.classList.remove('updating'), 300);
+      }
+  }
+
+  // Dynamic dashboard update function
+  function updateDashboardDynamically(data) {
+      // Instead of reloading, update specific sections
+      if (data.new_habit) {
+          // Add new habit to recent activities if section exists
+          const habitList = document.getElementById('habitList');
+          if (habitList) {
+              const habitItem = createHabitItemElement(data.new_habit);
+              habitList.insertBefore(habitItem, habitList.firstChild);
+          }
+
+          // Hide empty state if it exists
+          const emptyState = document.querySelector('.empty-state');
+          if (emptyState) {
+              emptyState.style.display = 'none';
+          }
+      }
+
+      // Update analytics numbers if provided
+      if (data.analytics) {
+          updateAnalyticsDisplay(data.analytics);
+      }
+  }
+
+  // Create habit item element for dynamic updates
+  function createHabitItemElement(habit) {
+      const div = document.createElement('div');
+      div.className = 'habit-item';
+      div.setAttribute('data-date', habit.date);
+      div.setAttribute('data-action', habit.action.toLowerCase());
+      div.setAttribute('data-category', (habit.category || '').toLowerCase());
+      div.setAttribute('data-habit-id', habit.id);
+
+      div.innerHTML = `
+          <div class="habit-content">
+              <div class="habit-date">${habit.date}</div>
+              <div class="habit-action">${habit.action}</div>
+              <div class="habit-category">${habit.category || 'No category'}</div>
+          </div>
+          <div class="habit-actions">
+              <button type="button" class="btn-habit-delete" onclick="deleteHabitFromHistory('${habit.id}', '${habit.action}')" title="Delete from History">
+                  <i class="fas fa-trash"></i>
+              </button>
+          </div>
+      `;
+
+      return div;
+  }
+
+  // Enhanced toast notification function with XSS protection
+  function showToast(message, type = 'info') {
+      // Create toast element
+      const toast = document.createElement('div');
+      toast.className = `toast-notification toast-${type}`;
+
+      // Create icon element
+      const icon = document.createElement('i');
+      const iconClass = type === 'success' ? 'check' : type === 'error' ? 'times' : type === 'warning' ? 'exclamation' : 'info';
+      icon.className = `fas fa-${iconClass}`;
+
+      // Create message span with safe text content
+      const messageSpan = document.createElement('span');
+      messageSpan.textContent = message; // Use textContent for XSS protection
+
+      // Append elements
+      toast.appendChild(icon);
+      toast.appendChild(messageSpan);
+
+      // Add toast styles if not already added
+      if (!document.getElementById('toast-styles')) {
+          const style = document.createElement('style');
+          style.id = 'toast-styles';
+          style.textContent = `
+              .toast-notification {
+                  position: fixed;
+                  top: 120px;
+                  right: 2rem;
+                  background: var(--card-bg);
+                  color: var(--text-primary);
+                  padding: 1rem 1.5rem;
+                  border-radius: 12px;
+                  box-shadow: var(--card-shadow);
+                  border-left: 4px solid var(--eco-accent);
+                  z-index: 1050;
+                  display: flex;
+                  align-items: center;
+                  gap: 0.75rem;
+                  font-weight: 600;
+                  backdrop-filter: blur(20px);
+                  animation: slideInRight 0.3s ease;
+              }
+
+              .toast-success { border-left-color: var(--eco-success); }
+              .toast-error { border-left-color: var(--eco-danger); }
+              .toast-warning { border-left-color: var(--eco-warning); }
+
+              @keyframes slideInRight {
+                  from { transform: translateX(100%); opacity: 0; }
+                  to { transform: translateX(0); opacity: 1; }
+              }
+
+              @keyframes slideOutRight {
+                  from { transform: translateX(0); opacity: 1; }
+                  to { transform: translateX(100%); opacity: 0; }
+              }
+          `;
+          document.head.appendChild(style);
+      }
+
+      // Add to page
+      document.body.appendChild(toast);
+
+      // Remove after delay
+      setTimeout(() => {
+          toast.style.animation = 'slideOutRight 0.3s ease';
+          setTimeout(() => {
+              if (toast.parentNode) {
+                  toast.parentNode.removeChild(toast);
+              }
+          }, 300);
+      }, 3000);
+  }
+
+  // Allow Enter key to add custom habit
+  document.addEventListener('DOMContentLoaded', function() {
+      const customHabitInput = document.getElementById('customHabitInput');
+      if (customHabitInput) {
+          customHabitInput.addEventListener('keypress', function(e) {
+              if (e.key === 'Enter') {
+                  addCustomHabit();
+              }
+          });
+      }
+  });
+  // Global chart instances for proper cleanup
+  let weeklyChart = null;
+  let monthlyChart = null;
+
+  // Utility function to safely destroy existing chart instance
+  function destroyChart(chart) {
+      if (chart && typeof chart.destroy === 'function') {
+          chart.destroy();
+      }
+      return null;
+  }
+
+  // Fetch habit data from your Flask backend
+  async function fetchHabitData() {
+      try {
+          // Use the correct endpoint that matches your Flask routes
+          const response = await fetch('/api/habit-history');
+          const data = await response.json();
+          return data;
+      } catch (error) {
+          console.error('Error fetching habit data:', error);
+          // Fallback to sample data if API fails
+          return {
+              weekly: [5, 7, 6, 8, 4, 9, 8],
+              monthly: [6.2, 7.1, 5.8, 7.5]
+          };
+      }
+  }
+
+          // Process weekly data from the last 7 days
+          function processWeeklyData(habitHistory) {
+              const today = new Date();
+              const weeklyData = [0, 0, 0, 0, 0, 0, 0]; // Mon-Sun
+
+              // Get the current day of week (0 = Sunday, 1 = Monday, etc.)
+              const todayDayOfWeek = today.getDay();
+
+              // Convert to Monday = 0 format (0 = Monday, 1 = Tuesday, ..., 6 = Sunday)
+              const todayIndex = todayDayOfWeek === 0 ? 6 : todayDayOfWeek - 1;
+
+              // Fill data for each day of the current week
+              for (let i = 0; i < 7; i++) {
+                  const date = new Date(today);
+                  // Calculate days to subtract to get to the start of week (Monday)
+                  const daysToSubtract = todayIndex - i;
+                  date.setDate(date.getDate() - daysToSubtract);
+                  const dateStr = date.toISOString().split('T')[0];
+
+                  // Count habits for this date
+                  const dayHabits = habitHistory.filter(habit => habit.date === dateStr);
+                  weeklyData[i] = dayHabits.length;
+              }
+
+              return weeklyData;
+          }
+
+          // Process monthly data from the last 4 weeks
+          function processMonthlyData(habitHistory) {
+              const today = new Date();
+              const monthlyData = [0, 0, 0, 0]; // Last 4 weeks
+
+              for (let week = 0; week < 4; week++) {
+                  let weekTotal = 0;
+
+                  // Get 7 days for this week
+                  for (let day = 0; day < 7; day++) {
+                      const date = new Date(today);
+                      date.setDate(date.getDate() - (week * 7 + day));
+                      const dateStr = date.toISOString().split('T')[0];
+
+                      const dayHabits = habitHistory.filter(habit => habit.date === dateStr);
+                      weekTotal += dayHabits.length;
+                  }
+
+                  monthlyData[3 - week] = (weekTotal / 7).toFixed(1); // Average per day
+              }
+
+              return monthlyData;
+          }
+
+          // Create dynamic chart data
+          function createWeeklyData(weeklyHabits) {
+              return {
+                  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                  datasets: [{
+                      label: 'Habits Completed',
+                      data: weeklyHabits,
+                      backgroundColor: 'rgba(76, 175, 80, 0.6)',
+                      borderColor: 'rgba(76, 175, 80, 1)',
+                      borderWidth: 2,
+                      borderRadius: 8,
+                      borderSkipped: false,
+                  }]
+              };
+          }
+
+          function createMonthlyData(monthlyHabits) {
+              return {
+                  labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                  datasets: [{
+                      label: 'Daily Average',
+                      data: monthlyHabits,
+                      borderColor: 'rgba(76, 175, 80, 1)',
+                      backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                      fill: true,
+                      tension: 0.4,
+                      pointBackgroundColor: 'rgba(76, 175, 80, 1)',
+                      pointBorderColor: '#ffffff',
+                      pointBorderWidth: 2,
+                      pointRadius: 6
+                  }]
+              };
+          }
+
+          // Chart configuration
+          function getChartOptions(maxValue = null) {
+              return {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                      legend: {
+                          display: false
+                      },
+                      tooltip: {
+                          backgroundColor: 'rgba(0,0,0,0.8)',
+                          titleColor: '#fff',
+                          bodyColor: '#fff',
+                          borderColor: 'rgba(76, 175, 80, 1)',
+                          borderWidth: 1
+                      }
+                  },
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          max: maxValue,
+                          grid: {
+                              color: 'rgba(0,0,0,0.1)'
+                          },
+                          ticks: {
+                              color: '#666',
+                              stepSize: 1
+                          }
+                      },
+                      x: {
+                          grid: {
+                              display: false
+                          },
+                          ticks: {
+                              color: '#666'
+                          }
+                      }
+                  }
+              };
+          }
+
+          // Initialize charts with real data and proper cleanup
+          document.addEventListener('DOMContentLoaded', async function() {
+              // If user is logged in, fetch their habit history
+              const username = '{{ username }}'; // This will be populated by Flask
+
+              if (username && username !== 'None') {
+                  try {
+                      // Fetch recent habits from your existing endpoint or create a new one
+                      const response = await fetch('/api/habit-history');
+                      const habitHistory = await response.json();
+
+                      // Process the data
+                      const weeklyHabits = processWeeklyData(habitHistory);
+                      const monthlyHabits = processMonthlyData(habitHistory);
+
+                      // Create chart data
+                      const weeklyData = createWeeklyData(weeklyHabits);
+                      const monthlyData = createMonthlyData(monthlyHabits);
+
+                      // Calculate max values for better scaling
+                      const maxWeekly = Math.max(...weeklyHabits, 5);
+                      const maxMonthly = Math.max(...monthlyHabits.map(Number), 5);
+
+                      // Destroy existing charts before creating new ones
+                      weeklyChart = destroyChart(weeklyChart);
+                      monthlyChart = destroyChart(monthlyChart);
+
+                      // Initialize charts with proper instance management
+                      const weeklyCtx = document.getElementById('weeklyChart');
+                      const monthlyCtx = document.getElementById('monthlyChart');
+
+                      if (weeklyCtx && monthlyCtx) {
+                          weeklyChart = new Chart(weeklyCtx, {
+                              type: 'bar',
+                              data: weeklyData,
+                              options: getChartOptions(maxWeekly)
+                          });
+
+                          monthlyChart = new Chart(monthlyCtx, {
+                              type: 'line',
+                              data: monthlyData,
+                              options: getChartOptions(maxMonthly)
+                          });
+                      }
+
+                  } catch (error) {
+                      console.error('Error loading habit data:', error);
+                      // Fall back to sample data
+                      initializeSampleCharts();
+                  }
+              } else {
+                  // User not logged in, show sample data
+                  initializeSampleCharts();
+              }
+          });
+
+          // Fallback function for sample data with proper chart management
+          function initializeSampleCharts() {
+              const sampleWeeklyData = createWeeklyData([5, 7, 6, 8, 4, 9, 8]);
+              const sampleMonthlyData = createMonthlyData([6.2, 7.1, 5.8, 7.5]);
+
+              // Destroy existing charts before creating new ones
+              weeklyChart = destroyChart(weeklyChart);
+              monthlyChart = destroyChart(monthlyChart);
+
+              const weeklyCtx = document.getElementById('weeklyChart');
+              const monthlyCtx = document.getElementById('monthlyChart');
+
+              if (weeklyCtx && monthlyCtx) {
+                  weeklyChart = new Chart(weeklyCtx, {
+                      type: 'bar',
+                      data: sampleWeeklyData,
+                      options: getChartOptions(10)
+                  });
+
+                  monthlyChart = new Chart(monthlyCtx, {
+                      type: 'line',
+                      data: sampleMonthlyData,
+                      options: getChartOptions(8)
+                  });
+              }
+          }
+
+          // Placeholder function for button
+          function scrollToChecklist() {
+              alert('Scrolling to checklist section...');
+          }
+          let habitToDelete = null;
+
+  // Edit habit
+  function editHabit(button) {
+      const item = button.closest('.checklist-item');
+      item.classList.add('editing');
+
+      // Focus on the input field
+      const input = item.querySelector('.edit-input');
+      input.focus();
+      input.select();
+  }
+
+  // Save habit changes
+  function saveHabit(button) {
+      const item = button.closest('.checklist-item');
+      const input = item.querySelector('.edit-input');
+      const select = item.querySelector('.edit-select');
+      const textSpan = item.querySelector('.checklist-text');
+      const categorySpan = item.querySelector('.checklist-category');
+      const habitId = item.dataset.habitId;
+
+      const newText = input.value.trim();
+      const newCategory = select.value;
+
+      if (!newText) {
+          alert('Habit text cannot be empty!');
+          return;
+      }
+
+      // Create form data for Flask backend
+      const formData = new FormData();
+      formData.append('habit_id', habitId);
+      formData.append('action', newText);
+      formData.append('date', '{{ current_date }}');
+      formData.append('category', newCategory);
+
+      // Send AJAX request to Flask backend
+      fetch('/update_habit', {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              // Update the display
+              textSpan.textContent = newText;
+              categorySpan.textContent = newCategory;
+              item.dataset.habit = newText;
+
+              // Exit edit mode
+              item.classList.remove('editing');
+
+              // Show success message
+              showMessage('Habit updated successfully!', 'success');
+          } else {
+              alert('Error updating habit: ' + (data.error || 'Unknown error'));
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('Error updating habit. Please try again.');
+      });
+  }
+
+  // Cancel edit
+  function cancelEdit(button) {
+      const item = button.closest('.checklist-item');
+      item.classList.remove('editing');
+
+      // Reset form values
+      const input = item.querySelector('.edit-input');
+      const select = item.querySelector('.edit-select');
+      const textSpan = item.querySelector('.checklist-text');
+      const categorySpan = item.querySelector('.checklist-category');
+
+      input.value = textSpan.textContent;
+      select.value = categorySpan.textContent;
+  }
+
+
+
+  // Confirm delete
+  function confirmDelete() {
+      if (habitToDelete) {
+          // Create form data for Flask backend
+          const formData = new FormData();
+          formData.append('habit_id', habitToDelete.id);
+
+          // Send AJAX request to Flask backend
+          fetch('/delete_habit', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  const item = document.querySelector(`[data-habit-id="${habitToDelete.id}"]`);
+                  if (item) {
+                      item.remove();
+                      updateProgress();
+                  }
+                  showMessage('Habit deleted successfully!', 'success');
+              } else {
+                  alert('Error deleting habit: ' + (data.error || 'Unknown error'));
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Error deleting habit. Please try again.');
+          });
+      }
+      closeDeleteModal();
+  }
+
+  // Close delete modal
+  function closeDeleteModal() {
+      document.getElementById('deleteModal').style.display = 'none';
+      habitToDelete = null;
+  }
+
+  // Close modal when clicking outside
+  window.onclick = function(event) {
+      const modal = document.getElementById('deleteModal');
+      if (event.target == modal) {
+          closeDeleteModal();
+      }
+  }
+
+  // Helper function to show messages
+  function showMessage(message, type) {
+      // Use the existing showToast function
+      showToast(message, type);
+  }
+
+  // Update progress counter
+  function updateProgress() {
+      const totalItems = document.querySelectorAll('.checklist-item').length;
+      const checkedItems = document.querySelectorAll('.checklist-item.checked').length;
+
+      document.getElementById('checkedCount').textContent = checkedItems;
+      document.getElementById('totalCount').textContent = totalItems;
+
+      const percentage = totalItems > 0 ? (checkedItems / totalItems) * 100 : 0;
+      document.getElementById('checklistFill').style.width = percentage + '%';
+  }
+
+  // HISTORY DELETE FUNCTION
+
+  // Delete habit from history (Recent Actions) - Fixed to prevent redirect
+  function deleteHabitFromHistory(habitId, habitName) {
+      // Store the habit info for deletion from history
+      window.historyHabitToDelete = { id: habitId, name: habitName };
+
+      // Update the modal text to indicate it's from history
+      const deleteHabitText = document.getElementById('deleteHabitText');
+      if (deleteHabitText) {
+          deleteHabitText.textContent = habitName;
+      }
+
+      // Update the hidden form input with the habit ID
+      const deleteHabitIdInput = document.getElementById('deleteHabitId');
+      if (deleteHabitIdInput) {
+          deleteHabitIdInput.value = habitId;
+      }
+
+      // Show Bootstrap modal for history deletion with proper error handling
+      const deleteModal = document.getElementById('deleteHabitModal');
+      if (deleteModal) {
+          try {
+              // Hide any existing modals first
+              const existingModals = document.querySelectorAll('.modal.show');
+              existingModals.forEach(modal => {
+                  const existingInstance = bootstrap.Modal.getInstance(modal);
+                  if (existingInstance) {
+                      existingInstance.hide();
+                  }
+              });
+
+              // Small delay to ensure previous modal is closed
+              setTimeout(() => {
+                  const bsModal = new bootstrap.Modal(deleteModal, {
+                      backdrop: true,
+                      keyboard: true,
+                      focus: true
+                  });
+                  bsModal.show();
+              }, 100);
+          } catch (error) {
+              console.error('Error showing delete modal:', error);
+              // Fallback: remove any stuck backdrops and try again
+              document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+              document.body.classList.remove('modal-open');
+              document.body.style.overflow = '';
+              document.body.style.paddingRight = '';
+
+              setTimeout(() => {
+                  const bsModal = new bootstrap.Modal(deleteModal);
+                  bsModal.show();
+              }, 200);
+          }
+      }
+  }
+
+  // New function to handle history deletion with AJAX to prevent redirect
+  function confirmHistoryDelete() {
+      const habitToDelete = window.historyHabitToDelete;
+
+      if (habitToDelete) {
+          // Create form data for Flask backend
+          const formData = new FormData();
+          formData.append('habit_id', habitToDelete.id);
+
+          // Send AJAX request to Flask backend to prevent redirect
+          fetch('/delete_habit_from_history', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => {
+              if (response.ok) {
+                  return response.json();
+              } else {
+                  throw new Error('Network response was not ok');
+              }
+          })
+          .then(data => {
+              if (data.success) {
+                  // Find and remove the item from DOM
+                  const item = document.querySelector(`[data-habit-id="${habitToDelete.id}"]`);
+                  if (item) {
+                      // Add fade out animation
+                      item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                      item.style.opacity = '0';
+                      item.style.transform = 'translateX(-100%)';
+
+                      setTimeout(() => {
+                          item.remove();
+                          // Check if no more habits and show empty state
+                          const habitList = document.getElementById('habitList');
+                          if (habitList && habitList.children.length === 0) {
+                              const emptyState = document.querySelector('.empty-state');
+                              if (emptyState) {
+                                  emptyState.style.display = 'block';
+                              }
+                          }
+                      }, 300);
+                  }
+                  showToast('Habit deleted successfully!', 'success');
+
+                  // Close the modal
+                  const deleteModal = document.getElementById('deleteHabitModal');
+                  if (deleteModal) {
+                      const bsModal = bootstrap.Modal.getInstance(deleteModal);
+                      if (bsModal) {
+                          bsModal.hide();
+                      }
+                  }
+              } else {
+                  showToast('Error deleting habit: ' + (data.error || 'Unknown error'), 'error');
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              showToast('Error deleting habit. Please try again.', 'error');
+          });
+      }
+
+      // Clear the deletion variable
+      window.historyHabitToDelete = null;
+  }
+
+  // Checklist habit functions
+  function editChecklistHabit(habitId, currentAction, currentCategory) {
+      document.getElementById('editChecklistHabitId').value = habitId;
+      document.getElementById('editChecklistHabitAction').value = currentAction;
+      document.getElementById('editChecklistHabitCategory').value = currentCategory;
+      new bootstrap.Modal(document.getElementById('editChecklistHabitModal')).show();
+  }
+
+  function deleteChecklistHabit(habitId, habitAction) {
+      document.getElementById('deleteChecklistHabitText').textContent = habitAction;
+      const confirmBtn = document.getElementById('confirmDeleteChecklistBtn');
+      confirmBtn.onclick = () => {
+          const formData = new FormData();
+          formData.append('habit_id', habitId);
+
+          fetch('/delete_habit', {
+              method: 'POST',
+              body: formData,
+              headers: {
+                  'X-Requested-With': 'XMLHttpRequest'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  const item = document.querySelector(`.checklist-item[data-habit-id="${habitId}"]`);
+                  if (item) {
+                      item.remove();
+                  }
+                  showToast('Habit deleted from checklist.', 'success');
+                  updateChecklistProgress();
+              } else {
+                  showToast(data.error, 'error');
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              showToast('Error deleting habit. Please try again.', 'error');
+          });
+
+          const modal = bootstrap.Modal.getInstance(document.getElementById('deleteChecklistHabitModal'));
+          modal.hide();
+      };
+      new bootstrap.Modal(document.getElementById('deleteChecklistHabitModal')).show();
+  }
+
+  document.getElementById('editChecklistHabitForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const habitId = document.getElementById('editChecklistHabitId').value;
+      const action = document.getElementById('editChecklistHabitAction').value;
+      const category = document.getElementById('editChecklistHabitCategory').value;
+      const formData = new FormData();
+      formData.append('habit_id', habitId);
+      formData.append('action', action);
+      formData.append('category', category);
+
+      fetch('/update_habit', {
+          method: 'POST',
+          body: formData,
+          headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              const item = document.querySelector(`.checklist-item[data-habit-id="${habitId}"]`);
+              if (item) {
+                  item.querySelector('.checklist-text').textContent = action;
+                  item.querySelector('.checklist-category').textContent = category;
+              }
+              showToast('Habit updated successfully.', 'success');
+          } else {
+              showToast(data.error, 'error');
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          showToast('Error updating habit. Please try again.', 'error');
+      });
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('editChecklistHabitModal'));
+      modal.hide();
+  });
+</script>
+
+<!-- Font Awesome for icons -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<!-- Google Fonts -->
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+  rel="stylesheet"
+/>
+{% endblock %}

@@ -1,0 +1,998 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+/* CSS Custom Properties for Theming - Same as dashboard */
+:root {
+    /* Light Theme Colors */
+    --eco-primary: #2d5016;
+    --eco-secondary: #4a7c59;
+    --eco-accent: #7fb069;
+    --eco-light: #a7c957;
+    --eco-success: #28a745;
+    --eco-warning: #ffc107;
+    --eco-danger: #dc3545;
+    
+    /* Light Theme Backgrounds */
+    --bg-primary: #f8fffe;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f0f9f0;
+    --bg-gradient: linear-gradient(135deg, #f8fffe 0%, #e8f5e8 50%, #f0f9f0 100%);
+    --bg-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a7c957' fill-opacity='0.03'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    
+    /* Light Theme Text */
+    --text-primary: #2d5016;
+    --text-secondary: #4a7c59;
+    --text-muted: #6c757d;
+    --text-inverse: #ffffff;
+    
+    /* Light Theme Cards */
+    --card-bg: #ffffff;
+    --card-border: rgba(127, 176, 105, 0.1);
+    --card-shadow: 0 8px 32px rgba(45, 80, 22, 0.08);
+    --card-shadow-hover: 0 16px 48px rgba(45, 80, 22, 0.12);
+    
+    /* Light Theme Interactive Elements */
+    --input-bg: #f8f9fa;
+    --input-border: #e9ecef;
+    --input-focus: var(--eco-accent);
+    --button-primary: var(--eco-accent);
+    --button-secondary: #f8f9fa;
+    
+    /* Light Theme Overlays */
+    --overlay-light: rgba(255, 255, 255, 0.1);
+    --overlay-dark: rgba(0, 0, 0, 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.18);
+}
+
+/* Dark Theme Colors */
+[data-theme="dark"] {
+    --eco-primary: #a7c957;
+    --eco-secondary: #7fb069;
+    --eco-accent: #9bb85c;
+    --eco-light: #b8d46a;
+    --eco-success: #4caf50;
+    --eco-warning: #ff9800;
+    --eco-danger: #f44336;
+    
+    /* Dark Theme Backgrounds */
+    --bg-primary: #0f1419;
+    --bg-secondary: #1a1f2e;
+    --bg-tertiary: #252b3a;
+    --bg-gradient: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #252b3a 100%);
+    --bg-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a7c957' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    
+    /* Dark Theme Text */
+    --text-primary: #e8f5e8;
+    --text-secondary: #a7c957;
+    --text-muted: #8a9ba8;
+    --text-inverse: #0f1419;
+    
+    /* Dark Theme Cards */
+    --card-bg: #1a1f2e;
+    --card-border: rgba(167, 201, 87, 0.15);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.4);
+    
+    /* Dark Theme Interactive Elements */
+    --input-bg: #252b3a;
+    --input-border: #3a4553;
+    --input-focus: var(--eco-accent);
+    --button-primary: var(--eco-accent);
+    --button-secondary: #252b3a;
+    
+    /* Dark Theme Overlays */
+    --overlay-light: rgba(255, 255, 255, 0.05);
+    --overlay-dark: rgba(0, 0, 0, 0.3);
+    --glass-bg: rgba(26, 31, 46, 0.7);
+    --glass-border: rgba(167, 201, 87, 0.2);
+}
+
+/* Base Styles */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body {
+    background: var(--bg-gradient), var(--bg-pattern);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--card-shadow);
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.theme-icon {
+    font-size: 1.2rem;
+    color: var(--eco-accent);
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon {
+    transform: rotate(180deg);
+}
+
+.theme-text {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+/* Animated Background Elements */
+.login-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-pattern);
+    opacity: 0.5;
+    z-index: -1;
+    animation: float 30s infinite linear;
+}
+
+@keyframes float {
+    0% { transform: translateX(-50px) translateY(-50px); }
+    100% { transform: translateX(0px) translateY(0px); }
+}
+
+/* Login Container */
+.login-container {
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Login Card */
+.login-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 0;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+/* Login Header */
+.login-header {
+    background: linear-gradient(135deg, var(--eco-primary) 0%, var(--eco-secondary) 100%);
+    color: var(--text-inverse);
+    padding: 3rem 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: var(--bg-pattern);
+    opacity: 0.1;
+    animation: float 20s infinite linear;
+}
+
+.login-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+}
+
+.login-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--overlay-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1.5rem;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(135deg, #ffffff, #f0f9f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.login-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 400;
+    position: relative;
+    z-index: 2;
+}
+
+/* Login Body */
+.login-body {
+    padding: 2.5rem;
+    background: var(--card-bg);
+}
+
+/* Form Styles */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-label {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 1.25rem 1.5rem 1.25rem 3.5rem;
+    border: 2px solid var(--input-border);
+    border-radius: 16px;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    position: relative;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--input-focus);
+    background: var(--card-bg);
+    box-shadow: 0 0 0 0.25rem rgba(127, 176, 105, 0.15);
+    transform: translateY(-2px);
+}
+
+.form-control:hover {
+    border-color: var(--eco-light);
+    background: var(--card-bg);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Input Icons */
+.input-icon {
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    z-index: 3;
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+.form-group:focus-within .input-icon {
+    color: var(--eco-accent);
+}
+
+/* Login Button */
+.btn-login {
+    background: linear-gradient(135deg, var(--eco-accent), var(--eco-light));
+    border: none;
+    color: var(--text-inverse);
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 1.25rem 2rem;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(127, 176, 105, 0.3);
+    margin-top: 1rem;
+}
+
+.btn-login::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-login:hover::before {
+    left: 100%;
+}
+
+.btn-login:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(127, 176, 105, 0.4);
+}
+
+.btn-login:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+/* Loading State */
+.btn-login.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn-login.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Login Footer */
+.login-footer {
+    padding: 2rem 2.5rem;
+    background: var(--bg-tertiary);
+    text-align: center;
+    border-top: 1px solid var(--card-border);
+}
+
+.login-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.login-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    background: transparent;
+    border: 2px solid transparent;
+}
+
+.login-link:hover {
+    color: var(--eco-accent);
+    background: var(--overlay-light);
+    border-color: var(--eco-accent);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.register-link {
+    background: var(--overlay-light);
+    border: 2px solid var(--eco-accent);
+    color: var(--eco-accent);
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.register-link:hover {
+    background: var(--eco-accent);
+    color: var(--text-inverse);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(127, 176, 105, 0.4);
+}
+
+/* Error Messages */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.alert-danger {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--eco-danger);
+    border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.alert-success {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--eco-success);
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+/* Floating Elements */
+.floating-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.floating-element {
+    position: absolute;
+    background: var(--eco-accent);
+    border-radius: 50%;
+    opacity: 0.1;
+    animation: floatUp 15s infinite linear;
+}
+
+.floating-element:nth-child(1) {
+    width: 20px;
+    height: 20px;
+    left: 10%;
+    animation-delay: 0s;
+    animation-duration: 12s;
+}
+
+.floating-element:nth-child(2) {
+    width: 30px;
+    height: 30px;
+    left: 20%;
+    animation-delay: 2s;
+    animation-duration: 16s;
+}
+
+.floating-element:nth-child(3) {
+    width: 15px;
+    height: 15px;
+    left: 70%;
+    animation-delay: 4s;
+    animation-duration: 14s;
+}
+
+.floating-element:nth-child(4) {
+    width: 25px;
+    height: 25px;
+    left: 80%;
+    animation-delay: 6s;
+    animation-duration: 18s;
+}
+
+.floating-element:nth-child(5) {
+    width: 18px;
+    height: 18px;
+    left: 90%;
+    animation-delay: 8s;
+    animation-duration: 13s;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.1;
+    }
+    90% {
+        opacity: 0.1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .theme-toggle {
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .theme-text {
+        display: none;
+    }
+    
+    .login-container {
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    .login-header {
+        padding: 2.5rem 2rem 1.5rem;
+    }
+    
+    .login-title {
+        font-size: 1.75rem;
+    }
+    
+    .login-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .login-body {
+        padding: 2rem;
+    }
+    
+    .login-footer {
+        padding: 1.5rem 2rem;
+    }
+    
+    .form-control {
+        padding: 1rem 1.25rem 1rem 3rem;
+    }
+    
+    .input-icon {
+        left: 1.25rem;
+    }
+    
+    .btn-login {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+    
+    .login-header {
+        padding: 2rem 1.5rem 1.25rem;
+    }
+    
+    .login-body {
+        padding: 1.5rem;
+    }
+    
+    .login-footer {
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .login-title {
+        font-size: 1.5rem;
+    }
+    
+    .login-links {
+        gap: 0.75rem;
+    }
+    
+    .login-link,
+    .register-link {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Focus Accessibility */
+.form-control:focus,
+.btn-login:focus,
+.login-link:focus,
+.register-link:focus {
+    outline: 2px solid var(--eco-accent);
+    outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .form-control {
+        border-width: 3px;
+    }
+    
+    .btn-login {
+        border: 2px solid var(--text-inverse);
+    }
+    
+    .login-card {
+        border-width: 2px;
+    }
+}
+</style>
+
+<!-- Theme Toggle Button -->
+<div class="theme-toggle" onclick="toggleTheme()">
+    <i class="theme-icon fas fa-moon" id="themeIcon"></i>
+    <span class="theme-text" id="themeText">Dark Mode</span>
+</div>
+
+<!-- Floating Background Elements -->
+<div class="floating-elements">
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+</div>
+
+<div class="login-container">
+    <div class="login-card">
+        <!-- Login Header -->
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <h1 class="login-title">Welcome Back</h1>
+            <p class="login-subtitle">Sign in to continue your eco-friendly journey</p>
+        </div>
+
+        <!-- Login Body -->
+        <div class="login-body">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+                            <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i class="fas fa-user"></i>
+                        Username
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-user"></i>
+                        <input 
+                            type="text" 
+                            id="username"
+                            name="username" 
+                            class="form-control"
+                            placeholder="Enter your username"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="input-icon fas fa-lock"></i>
+                        <input 
+                            type="password" 
+                            id="password"
+                            name="password" 
+                            class="form-control"
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="passwordToggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <i class="fas fa-sign-in-alt me-2"></i>
+                    Sign In
+                </button>
+            </form>
+        </div>
+
+        <!-- Login Footer -->
+        <div class="login-footer">
+            <div class="login-links">
+                <p class="mb-3" style="color: var(--text-muted); font-size: 0.9rem;">
+                    Don't have an account yet?
+                </p>
+                <a href="{{ url_for('register') }}" class="register-link">
+                    <i class="fas fa-user-plus"></i>
+                    Create New Account
+                </a>
+                <a href="#" class="login-link" onclick="showForgotPassword()">
+                    <i class="fas fa-question-circle"></i>
+                    Forgot Password?
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Forgot Password Modal (Optional) -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: none; background: var(--card-bg);">
+            <div class="modal-header" style="background: linear-gradient(135deg, var(--eco-primary), var(--eco-secondary)); color: var(--text-inverse); border: none; border-radius: 20px 20px 0 0;">
+                <h5 class="modal-title" id="forgotPasswordModalLabel">
+                    <i class="fas fa-key me-2"></i>
+                    Password Recovery
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 2rem;">
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                    Password recovery is not implemented yet. Please contact the administrator for assistance.
+                </p>
+                <div style="text-align: center;">
+                    <i class="fas fa-tools" style="font-size: 3rem; color: var(--eco-accent); opacity: 0.5; margin-bottom: 1rem;"></i>
+                    <p style="color: var(--text-secondary); font-weight: 600;">Feature Coming Soon</p>
+                </div>
+            </div>
+            <div class="modal-footer" style="border: none; padding: 1rem 2rem 2rem;">
+                <button type="button" class="btn-login" data-bs-dismiss="modal" style="width: 100%; margin: 0;">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Back to Login
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Theme Toggle Functionality
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    // Update theme toggle button
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    
+    if (newTheme === 'dark') {
+        themeIcon.className = 'theme-icon fas fa-sun';
+        themeText.textContent = 'Light Mode';
+    } else {
+        themeIcon.className = 'theme-icon fas fa-moon';
+        themeText.textContent = 'Dark Mode';
+    }
+}
+
+// Initialize theme on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    
+    if (savedTheme === 'dark') {
+        themeIcon.className = 'theme-icon fas fa-sun';
+        themeText.textContent = 'Light Mode';
+    } else {
+        themeIcon.className = 'theme-icon fas fa-moon';
+        themeText.textContent = 'Dark Mode';
+    }
+});
+
+// Password Toggle Functionality
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('passwordToggleIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.className = 'fas fa-eye';
+    }
+}
+
+// Show Forgot Password Modal
+function showForgotPassword() {
+    const modal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
+    modal.show();
+}
+
+// Form Submission with Loading State
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    
+    if (loginForm && loginBtn) {
+        loginForm.addEventListener('submit', function(e) {
+            // Add loading state
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Signing In...';
+            loginBtn.disabled = true;
+            loginBtn.classList.add('loading');
+            
+            // Re-enable button after 5 seconds (in case of slow response)
+            setTimeout(() => {
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Sign In';
+                loginBtn.disabled = false;
+                loginBtn.classList.remove('loading');
+            }, 5000);
+        });
+    }
+    
+    // Auto-focus on username field
+    const usernameInput = document.getElementById('username');
+    if (usernameInput) {
+        usernameInput.focus();
+    }
+    
+    // Enhanced form validation
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.style.borderColor = 'var(--eco-danger)';
+            } else {
+                this.style.borderColor = 'var(--eco-success)';
+            }
+        });
+        
+        input.addEventListener('focus', function() {
+            this.style.borderColor = 'var(--input-focus)';
+        });
+    });
+});
+
+// Keyboard Navigation Enhancement
+document.addEventListener('keydown', function(e) {
+    // Enter key on username field focuses password field
+    if (e.key === 'Enter' && e.target.id === 'username') {
+        e.preventDefault();
+        document.getElementById('password').focus();
+    }
+    
+    // Escape key closes modal if open
+    if (e.key === 'Escape') {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('forgotPasswordModal'));
+        if (modal) {
+            modal.hide();
+        }
+    }
+});
+
+// Add subtle animations on input focus
+document.addEventListener('DOMContentLoaded', function() {
+    const formGroups = document.querySelectorAll('.form-group');
+    
+    formGroups.forEach(group => {
+        const input = group.querySelector('.form-control');
+        const icon = group.querySelector('.input-icon');
+        
+        if (input && icon) {
+            input.addEventListener('focus', function() {
+                icon.style.transform = 'translateY(-50%) scale(1.1)';
+                icon.style.color = 'var(--eco-accent)';
+            });
+            
+            input.addEventListener('blur', function() {
+                icon.style.transform = 'translateY(-50%) scale(1)';
+                icon.style.color = 'var(--text-secondary)';
+            });
+        }
+    });
+});
+</script>
+
+<!-- Add password toggle button styles -->
+<style>
+.input-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    z-index: 4;
+}
+
+.password-toggle:hover {
+    color: var(--eco-accent);
+    background: var(--overlay-light);
+}
+
+.password-toggle:focus {
+    outline: 2px solid var(--eco-accent);
+    outline-offset: 2px;
+}
+
+/* Adjust password input padding to accommodate toggle button */
+#password {
+    padding-right: 4rem !important;
+}
+</style>
+
+<!-- Font Awesome for icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+{% endblock %}

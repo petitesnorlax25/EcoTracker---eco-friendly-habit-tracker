@@ -1,0 +1,155 @@
+[
+  {
+    "id": "4176f15f-8e70-4116-8545-5a56abe7d0b0",
+    "username": "user1",
+    "action": "used a reusable bag",
+    "date": "2025-08-04",
+    "category": "Waste Reduction",
+    "logged_at": "2025-08-04T09:39:53.510146",
+    "history_id": "54239c14-6f46-4d47-92c4-11ec8531c63b"
+  },
+  {
+    "id": "d230ee7c-0c18-46b0-b18f-24d4bc2ab793",
+    "username": "user1",
+    "action": "turn off lights when not use",
+    "date": "2025-08-04",
+    "category": "Energy Saving",
+    "logged_at": "2025-08-04T09:40:18.995380",
+    "history_id": "1c0b51be-e53e-43ba-ab95-39511896e65f"
+  },
+  {
+    "id": "63eb9617-2d10-422e-9b05-c3f199b98205",
+    "username": "user1",
+    "action": "using paper bag instead of plastic",
+    "category": "Waste Reduction",
+    "date": "2025-07-18",
+    "logged_at": "2025-07-17T13:47:55.356717",
+    "history_id": "36c8c39c-b46a-4ee4-a8a5-d551864c409b"
+  },
+  {
+    "id": "4176f15f-8e70-4116-8545-5a56abe7d0b0",
+    "username": "user1",
+    "action": "used a reusable bag",
+    "category": "Waste Reduction",
+    "date": "2025-07-18",
+    "logged_at": "2025-07-18T13:49:38.173986",
+    "history_id": "9d5e14a7-0d67-4f26-9b16-330d6d2c3fab"
+  },
+  {
+    "id": "4176f15f-8e70-4116-8545-5a56abe7d0b0",
+    "username": "user1",
+    "action": "used a reusable bag",
+    "category": "Waste Reduction",
+    "date": "2025-07-25",
+    "logged_at": "2025-07-25T13:57:29.605836",
+    "history_id": "c8563106-8a92-4103-8ba0-23a22a211e6c"
+  },
+  {
+    "id": "4176f15f-8e70-4116-8545-5a56abe7d0b0",
+    "username": "user1",
+    "action": "used a reusable bag",
+    "category": "Waste Reduction",
+    "date": "2025-07-28",
+    "logged_at": "2025-07-28T13:57:38.117249",
+    "history_id": "2fb564ef-9c3e-4d7c-9e63-69940b190806"
+  },
+  {
+    "id": "d230ee7c-0c18-46b0-b18f-24d4bc2ab793",
+    "username": "user1",
+    "action": "turn off lights when not use",
+    "category": "Energy Saving",
+    "date": "2025-07-28",
+    "logged_at": "2025-07-28T13:57:39.516565",
+    "history_id": "b9c565ab-22af-48bf-b323-1df1d15231df"
+  },
+  {
+    "id": "63eb9617-2d10-422e-9b05-c3f199b98205",
+    "username": "user1",
+    "action": "using paper bag instead of plastic",
+    "category": "Waste Reduction",
+    "date": "2025-07-28",
+    "logged_at": "2025-07-28T13:57:40.223132",
+    "history_id": "07f0c8a2-a3c9-4fcf-9c33-52ef2243d802"
+  },
+  {
+    "id": "4176f15f-8e70-4116-8545-5a56abe7d0b0",
+    "username": "user1",
+    "action": "used a reusable bag",
+    "category": "Waste Reduction",
+    "date": "2025-07-19",
+    "logged_at": "2025-07-19T13:58:17.547730",
+    "history_id": "60cbd88e-3b9c-433a-9ad8-8144ba3f4017"
+  },
+  {
+    "id": "d230ee7c-0c18-46b0-b18f-24d4bc2ab793",
+    "username": "user1",
+    "action": "turn off lights when not use",
+    "category": "Energy Saving",
+    "date": "2025-07-19",
+    "logged_at": "2025-07-19T13:58:18.305225",
+    "history_id": "0d824766-bd6f-40c8-b24d-bdbf3b6f1ad2"
+  },
+  {
+    "id": "63eb9617-2d10-422e-9b05-c3f199b98205",
+    "username": "user1",
+    "action": "using paper bag instead of plastic",
+    "category": "Waste Reduction",
+    "date": "2025-08-04",
+    "logged_at": "2025-08-04T13:59:25.552919",
+    "history_id": "175af671-f771-41c5-9ad7-71e1bcded5bd"
+  },
+  {
+    "id": "4176f15f-8e70-4116-8545-5a56abe7d0b0",
+    "username": "user1",
+    "action": "used a reusable bag",
+    "category": "Waste Reduction",
+    "date": "2025-07-26",
+    "logged_at": "2025-07-26T14:00:01.914401",
+    "history_id": "cdd94d8a-091c-4920-9c23-63b399f22587"
+  },
+  {
+    "id": "d230ee7c-0c18-46b0-b18f-24d4bc2ab793",
+    "username": "user1",
+    "action": "turn off lights when not use",
+    "category": "Energy Saving",
+    "date": "2025-07-26",
+    "logged_at": "2025-07-26T14:00:02.444618",
+    "history_id": "94c8739f-5c24-4504-8180-7344c6cd92c2"
+  },
+  {
+    "id": "63eb9617-2d10-422e-9b05-c3f199b98205",
+    "username": "user1",
+    "action": "using paper bag instead of plastic",
+    "category": "Waste Reduction",
+    "date": "2025-07-26",
+    "logged_at": "2025-07-26T14:00:03.523694",
+    "history_id": "aa9f7bc4-8e56-435e-8d55-9b75f7f6323b"
+  },
+  {
+    "id": "4176f15f-8e70-4116-8545-5a56abe7d0b0",
+    "username": "user1",
+    "action": "used a reusable bag",
+    "category": "Waste Reduction",
+    "date": "2025-07-27",
+    "logged_at": "2025-07-27T14:00:49.650922",
+    "history_id": "5cda2343-98ab-4df0-a315-5bd195e91c6a"
+  },
+  {
+    "id": "d230ee7c-0c18-46b0-b18f-24d4bc2ab793",
+    "username": "user1",
+    "action": "turn off lights when not use",
+    "category": "Energy Saving",
+    "date": "2025-07-27",
+    "logged_at": "2025-07-27T14:00:50.406439",
+    "history_id": "c5a7de7c-3a70-4c2a-8e9c-97103d2d2869"
+  },
+  {
+    "id": "63eb9617-2d10-422e-9b05-c3f199b98205",
+    "username": "user1",
+    "action": "using paper bag instead of plastic",
+    "category": "Waste Reduction",
+    "date": "2025-07-27",
+    "logged_at": "2025-07-27T14:00:52.304473",
+    "history_id": "4c4e2c2b-1730-43e5-ae47-dff058e107c3"
+  }
+]

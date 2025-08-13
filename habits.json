@@ -1,0 +1,23 @@
+[
+  {
+    "id": "4176f15f-8e70-4116-8545-5a56abe7d0b0",
+    "username": "user1",
+    "action": "used a reusable bag",
+    "category": "Waste Reduction",
+    "date": "2025-07-18"
+  },
+  {
+    "id": "d230ee7c-0c18-46b0-b18f-24d4bc2ab793",
+    "username": "user1",
+    "action": "turn off lights when not use",
+    "category": "Energy Saving",
+    "date": "2025-08-04"
+  },
+  {
+    "id": "63eb9617-2d10-422e-9b05-c3f199b98205",
+    "username": "user1",
+    "action": "using paper bag instead of plastic",
+    "category": "Waste Reduction",
+    "date": "2025-08-04"
+  }
+]

@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EcoTracker - Eco-Friendly Habit Tracker</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    />
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        rel="stylesheet"
+    />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --eco-primary: #2d5016;
+            --eco-secondary: #4a7c59;
+            --eco-accent: #7fb069;
+            --eco-light: #a7c957;
+            --eco-bg: #f8fffe;
+            --eco-success: #28a745;
+            --eco-warning: #ffc107;
+            --eco-danger: #dc3545;
+            
+            /* Light Theme */
+            --bg-primary: #f8fffe;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f0f9f0;
+            --text-primary: #2d5016;
+            --text-secondary: #4a7c59;
+            --text-muted: #6c757d;
+            --text-inverse: #ffffff;
+            --card-bg: #ffffff;
+            --card-border: rgba(127, 176, 105, 0.1);
+            --card-shadow: 0 8px 32px rgba(45, 80, 22, 0.08);
+            --input-bg: #f8f9fa;
+            --input-border: #e9ecef;
+            --input-focus: var(--eco-accent);
+            --overlay-light: rgba(255, 255, 255, 0.1);
+            --overlay-dark: rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+        }
+
+        [data-theme="dark"] {
+            /* Enhanced Dark Theme - Modern & Clean */
+            --eco-primary: #64B5F6;
+            --eco-secondary: #81C784;
+            --eco-accent: #4FC3F7;
+            --eco-light: #A5D6A7;
+            --eco-success: #66BB6A;
+            --eco-warning: #FFB74D;
+            --eco-danger: #EF5350;
+            
+            /* Dark Theme Backgrounds - Improved Contrast */
+            --bg-primary: #121212;
+            --bg-secondary: #1E1E1E;
+            --bg-tertiary: #2D2D2D;
+            --bg-gradient: linear-gradient(135deg, #121212 0%, #1E1E1E 50%, #2D2D2D 100%);
+            --bg-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2364B5F6' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            
+            /* Dark Theme Text - Enhanced Readability */
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0BEC5;
+            --text-muted: #78909C;
+            --text-inverse: #121212;
+            
+            /* Dark Theme Cards - Better Separation */
+            --card-bg: #1E1E1E;
+            --card-border: rgba(255, 255, 255, 0.12);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --card-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.7);
+            
+            /* Dark Theme Interactive Elements */
+            --input-bg: #2D2D2D;
+            --input-border: #424242;
+            --input-focus: var(--eco-accent);
+            --button-primary: var(--eco-accent);
+            --button-secondary: #2D2D2D;
+            
+            /* Dark Theme Overlays - Improved Glass Effect */
+            --overlay-light: rgba(255, 255, 255, 0.1);
+            --overlay-dark: rgba(0, 0, 0, 0.6);
+            --glass-bg: rgba(30, 30, 30, 0.9);
+            --glass-border: rgba(100, 181, 246, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif, 'Segoe UI', Tahoma, Geneva, Verdana;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .eco-navbar {
+            background: linear-gradient(
+                135deg,
+                var(--eco-primary) 0%,
+                var(--eco-secondary) 100%
+            );
+            box-shadow: 0 2px 15px rgba(45, 80, 22, 0.1);
+            padding: 0.75rem 0;
+            transition: all 0.3s ease;
+            min-height: 70px;
+        }
+
+        .eco-navbar.scrolled {
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 25px rgba(45, 80, 22, 0.15);
+            min-height: 60px;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            margin-right: 2rem;
+        }
+
+        .navbar-brand:hover {
+            color: var(--eco-light) !important;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            background: var(--eco-accent);
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+            font-size: 1rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .navbar-nav {
+            gap: 0.25rem;
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .navbar-nav .nav-link.active {
+            background: var(--eco-accent);
+            color: var(--eco-primary) !important;
+            font-weight: 600;
+        }
+
+        .navbar-nav .nav-link i {
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .theme-toggle-nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .theme-toggle-nav:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .theme-icon-nav {
+            font-size: 1rem;
+            color: var(--eco-light);
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle-nav:hover .theme-icon-nav {
+            transform: rotate(180deg);
+        }
+
+        .welcome-text {
+            color: var(--eco-light) !important;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .welcome-text:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--eco-light) !important;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        .welcome-text::after {
+            content: none !important;
+        }
+
+        /* Custom dropdown menu styling */
+        .dropdown-menu {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(20px);
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            min-width: 160px;
+        }
+
+        .dropdown-item {
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dropdown-item:hover {
+            background: var(--eco-accent);
+            color: var(--eco-primary);
+            transform: translateX(4px);
+        }
+
+        .dropdown-item:focus {
+            background: var(--eco-accent);
+            color: var(--eco-primary);
+        }
+
+        .dropdown-item i {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .dropdown-divider {
+            margin: 0.5rem 0;
+            border-top: 1px solid var(--card-border);
+            opacity: 0.6;
+        }
+
+        /* Dark theme dropdown adjustments */
+        [data-theme="dark"] .dropdown-menu {
+            background: var(--card-bg);
+            border-color: var(--card-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="dark"] .dropdown-item:hover {
+            background: var(--eco-accent);
+            color: var(--text-inverse);
+        }
+
+        [data-theme="dark"] .dropdown-item:focus {
+            background: var(--eco-accent);
+            color: var(--text-inverse);
+        }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            background: var(--eco-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--eco-primary);
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .btn-eco-primary {
+            background: var(--eco-accent);
+            border: none;
+            color: var(--eco-primary);
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-eco-primary:hover {
+            background: var(--eco-light);
+            color: var(--eco-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(127, 176, 105, 0.3);
+            text-decoration: none;
+        }
+
+        .btn-eco-outline {
+            border: 2px solid var(--eco-accent);
+            color: var(--eco-accent);
+            background: transparent;
+            font-weight: 600;
+            padding: 0.4rem 1.25rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-eco-outline:hover {
+            background: var(--eco-accent);
+            color: var(--eco-primary);
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.25rem 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            width: 1.2em;
+            height: 1.2em;
+        }
+
+        /* Enhanced Modal Styles */
+        .eco-modal .modal-dialog {
+            max-width: 450px;
+            margin: 2rem auto;
+        }
+
+        .eco-modal .modal-content {
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            position: relative;
+        }
+
+        .eco-modal .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--eco-accent), var(--eco-light));
+            z-index: 1;
+        }
+
+        .eco-modal .modal-header {
+            background: linear-gradient(135deg, var(--eco-primary) 0%, var(--eco-secondary) 100%);
+            color: var(--text-inverse);
+            padding: 2.5rem 2.5rem 2rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eco-modal .modal-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a7c957' fill-opacity='0.1'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(0px) translateY(0px); }
+        }
+
+        .eco-modal .modal-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(135deg, #ffffff, #f0f9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--overlay-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            animation: modalIconPulse 2s infinite;
+        }
+
+        @keyframes modalIconPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        .eco-modal .modal-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+            font-weight: 400;
+            position: relative;
+            z-index: 2;
+        }
+
+        .eco-modal .btn-close {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 3;
+        }
+
+        .eco-modal .btn-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .eco-modal .modal-body {
+            padding: 2.5rem;
+            background: var(--card-bg);
+            position: relative;
+        }
+
+        .eco-form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .eco-form-label {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .eco-form-label i {
+            color: var(--eco-accent);
+            font-size: 1.1rem;
+        }
+
+        .eco-form-control {
+            width: 100%;
+            padding: 1.25rem 1.5rem 1.25rem 3.5rem;
+            border: 2px solid var(--input-border);
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .eco-form-control:focus {
+            outline: none;
+            border-color: var(--input-focus);
+            background: var(--card-bg);
+            box-shadow: 0 0 0 0.25rem rgba(127, 176, 105, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .eco-form-control::placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            z-index: 3;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .eco-form-group:focus-within .input-icon {
+            color: var(--eco-accent);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .eco-modal .modal-footer {
+            padding: 2rem 2.5rem 2.5rem;
+            border: none;
+            background: var(--card-bg);
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-eco-modal-primary {
+            background: linear-gradient(135deg, var(--eco-accent), var(--eco-light));
+            border: none;
+            color: var(--text-inverse);
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 16px rgba(127, 176, 105, 0.3);
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-eco-modal-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-eco-modal-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-eco-modal-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(127, 176, 105, 0.4);
+            color: var(--text-inverse);
+            text-decoration: none;
+        }
+
+        .btn-eco-modal-primary.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .btn-eco-modal-primary.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-eco-modal-secondary {
+            background: transparent;
+            border: 2px solid var(--input-border);
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            backdrop-filter: blur(20px);
+            font-size: 1rem;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-eco-modal-secondary:hover {
+            background: var(--input-bg);
+            border-color: var(--eco-accent);
+            color: var(--eco-primary);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .modal-switch-text {
+            text-align: center;
+            padding: 1rem 2.5rem 2rem;
+            background: var(--card-bg);
+            border-top: 1px solid var(--card-border);
+        }
+
+        .modal-switch-text p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .modal-switch-link {
+            color: var(--eco-accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .modal-switch-link:hover {
+            color: var(--eco-secondary);
+            text-decoration: underline;
+        }
+
+        /* Modal Animation */
+        .eco-modal .modal-dialog {
+            transform: scale(0.8) translateY(-50px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .eco-modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background: rgba(45, 80, 22, 0.95);
+                margin-top: 1rem;
+                padding: 1.5rem;
+                border-radius: 15px;
+                backdrop-filter: blur(10px);
+            }
+
+            .navbar-nav {
+                margin-bottom: 1rem;
+            }
+
+            .navbar-nav .nav-link {
+                padding: 0.75rem 1rem !important;
+                margin-bottom: 0.25rem;
+            }
+
+            .navbar-right {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+                margin-left: 0;
+            }
+
+            .theme-toggle-nav {
+                justify-content: center;
+                padding: 0.75rem;
+            }
+
+            .welcome-text {
+                justify-content: center;
+                padding: 0.5rem;
+            }
+
+            .btn-eco-primary,
+            .btn-eco-outline {
+                justify-content: center;
+                padding: 0.75rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+                gap: 0.5rem;
+            }
+
+            .brand-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+
+            .theme-toggle-nav .theme-text-nav {
+                display: none;
+            }
+
+            .eco-modal .modal-dialog {
+                margin: 1rem;
+                max-width: none;
+            }
+
+            .eco-modal .modal-header {
+                padding: 2rem 2rem 1.5rem;
+            }
+
+            .eco-modal .modal-body {
+                padding: 2rem;
+            }
+
+            .eco-modal .modal-footer {
+                padding: 1.5rem 2rem 2rem;
+                flex-direction: column;
+            }
+
+            .btn-eco-modal-primary,
+            .btn-eco-modal-secondary {
+                width: 100%;
+            }
+
+            .modal-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+
+            .eco-modal .modal-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Content spacing adjustment */
+        .main-content {
+            margin-top: 70px;
+        }
+
+        /* Form validation styles */
+        .eco-form-control.is-invalid {
+            border-color: var(--eco-danger);
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.15);
+        }
+
+        .eco-form-control.is-valid {
+            border-color: var(--eco-success);
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.15);
+        }
+
+        .invalid-feedback {
+            color: var(--eco-danger);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .valid-feedback {
+            color: var(--eco-success);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        /* === NEW & IMPROVED MODAL STYLES === */
+        .eco-modal .modal-dialog {
+            max-width: 480px;
+        }
+        .eco-modal .modal-content {
+            border-radius: var(--card-radius-lg);
+            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.2);
+            background: var(--bg-secondary);
+        }
+        .eco-modal .modal-header {
+            background: linear-gradient(135deg, var(--eco-primary) 0%, var(--eco-secondary) 100%);
+            padding: var(--space-lg) var(--space-lg) var(--space-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            text-align: left;
+        }
+        .modal-header-content .modal-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            gap: 0.75rem;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            background: none;
+            -webkit-background-clip: unset;
+            -webkit-text-fill-color: unset;
+        }
+        .modal-header-content .modal-subtitle {
+            font-size: 1rem;
+            opacity: 0.85;
+            margin-top: 0.5rem;
+            font-weight: 400;
+            color: #fff;
+        }
+        .eco-modal .btn-close {
+            background: rgba(255, 255, 255, 0.15) url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            opacity: 0.9;
+        }
+        .eco-modal .btn-close:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: scale(1.1);
+        }
+        .eco-modal .modal-body {
+            padding: var(--space-xl) var(--space-lg);
+        }
+        .eco-modal .modal-footer {
+            padding: var(--space-md) var(--space-lg);
+            background: var(--bg-tertiary);
+            border-top: 1px solid var(--input-border);
+            justify-content: flex-end;
+        }
+        [data-theme="dark"] .eco-modal .modal-footer {
+            background: var(--bg-primary);
+            border-top-color: var(--input-border);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg eco-navbar fixed-top">
+        <div class="container">
+            <!-- Brand -->
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <div class="brand-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                EcoTracker
+            </a>
+
+            <!-- Mobile toggle button -->
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navigation items -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('index') }}">
+                            <i class="fas fa-home"></i>Home
+                        </a>
+                    </li>
+                    {% if 'username' in session %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">
+                            <i class="fas fa-tachometer-alt"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#progress">
+                            <i class="fas fa-chart-line"></i>Progress
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#checklist">
+                            <i class="fas fa-check"></i>Checklist
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#habits">
+                            <i class="fas fa-tasks"></i>Habits
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <!-- Right side items -->
+                <div class="navbar-right">
+                    <!-- Theme Toggle -->
+                    <div class="theme-toggle-nav" onclick="toggleTheme()">
+                        <i class="theme-icon-nav fas fa-moon" id="themeIconNav"></i>
+                        <span class="theme-text-nav" id="themeTextNav">Dark</span>
+                    </div>
+
+                    <!-- User section with dropdown -->
+                    {% if 'username' in session %}
+                    <div class="dropdown">
+                        <a class="welcome-text dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar">
+                                {{ session['username'][0].upper() }}
+                            </div>
+                            <span class="d-none d-lg-inline">{{ session['username'] }}</span>
+                            <i class="fas fa-chevron-down ms-2" style="font-size: 0.8rem;"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                    <i class="fas fa-user-edit me-2"></i>Edit Profile
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a href="#"
+                       class="btn btn-eco-outline"
+                       data-bs-toggle="modal"
+                       data-bs-target="#loginModal">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="#"
+                       class="btn btn-eco-primary"
+                       data-bs-toggle="modal"
+                       data-bs-target="#registerModal">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Enhanced Login Modal -->
+    <div class="modal fade eco-modal" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ url_for('login') }}" id="loginForm">
+                    <div class="modal-header">
+                        <div class="modal-header-content">
+                            <h5 class="modal-title" id="loginModalLabel"><i class="fas fa-sign-in-alt"></i> Welcome Back!</h5>
+                            <p class="modal-subtitle">Sign in to continue your eco journey.</p>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="eco-form-group">
+                            <label for="loginUsername" class="eco-form-label">
+                                <i class="fas fa-user"></i>
+                                Username
+                            </label>
+                            <div class="position-relative">
+                                <input
+                                    type="text"
+                                    class="eco-form-control"
+                                    id="loginUsername"
+                                    name="username"
+                                    placeholder="Enter your username"
+                                    required
+                                >
+
+                            </div>
+                        </div>
+                        
+                        <div class="eco-form-group">
+                            <label for="loginPassword" class="eco-form-label">
+                                <i class="fas fa-lock"></i>
+                                Password
+                            </label>
+                            <div class="position-relative">
+                                <input
+                                    type="password"
+                                    class="eco-form-control"
+                                    id="loginPassword"
+                                    name="password"
+                                    placeholder="Enter your password"
+                                    required
+                                >
+
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn-eco-modal-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-eco-modal-primary" id="loginBtn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="modal-switch-text">
+                    <p>Don't have an account? 
+                        <a href="#" class="modal-switch-link" onclick="switchToRegister()">Create one here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Register Modal -->
+    <div class="modal fade eco-modal" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+                    <div class="modal-header">
+                        <div class="modal-header-content">
+                            <h5 class="modal-title" id="registerModalLabel"><i class="fas fa-user-plus"></i> Join the Community!</h5>
+                            <p class="modal-subtitle">Start your sustainable lifestyle journey today.</p>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="eco-form-group">
+                            <label for="registerUsername" class="eco-form-label">
+                                <i class="fas fa-user"></i>
+                                Username
+                            </label>
+                            <div class="position-relative">
+                                <input
+                                    type="text"
+                                    class="eco-form-control"
+                                    id="registerUsername"
+                                    name="username"
+                                    placeholder="Choose a unique username"
+                                    required
+                                >
+      
+                            </div>
+                        </div>
+                        
+                        <div class="eco-form-group">
+                            <label for="registerPassword" class="eco-form-label">
+                                <i class="fas fa-lock"></i>
+                                Password
+                            </label>
+                            <div class="position-relative">
+                                <input
+                                    type="password"
+                                    class="eco-form-control"
+                                    id="registerPassword"
+                                    name="password"
+                                    placeholder="Create a secure password"
+                                    required
+                                >
+                 
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn-eco-modal-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-eco-modal-primary" id="registerBtn">
+                            <i class="fas fa-user-plus"></i>
+                            Create Account
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="modal-switch-text">
+                    <p>Already have an account? 
+                        <a href="#" class="modal-switch-link" onclick="switchToLogin()">Sign in here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade eco-modal" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ url_for('edit_profile') }}" id="editProfileForm">
+                    <div class="modal-header">
+                        <div class="modal-header-content">
+                            <h5 class="modal-title" id="editProfileModalLabel"><i class="fas fa-user-edit"></i> Edit Profile</h5>
+                            <p class="modal-subtitle">Update your profile information.</p>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="eco-form-group">
+                            <label for="editUsername" class="eco-form-label">
+                                <i class="fas fa-user"></i>
+                                Username
+                            </label>
+                            <div class="position-relative">
+                                <input
+                                    type="text"
+                                    class="eco-form-control"
+                                    id="editUsername"
+                                    name="username"
+                                    placeholder="Enter new username"
+                                    value="{% if 'username' in session %}{{ session['username'] }}{% endif %}"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        
+                        
+
+                        <div class="eco-form-group">
+                            <label for="editCurrentPassword" class="eco-form-label">
+                                <i class="fas fa-lock"></i>
+                                Current Password
+                            </label>
+                            <div class="position-relative">
+                                <input
+                                    type="password"
+                                    class="eco-form-control"
+                                    id="editCurrentPassword"
+                                    name="current_password"
+                                    placeholder="Enter current password to confirm changes"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="eco-form-group">
+                            <label for="editNewPassword" class="eco-form-label">
+                                <i class="fas fa-key"></i>
+                                New Password (Optional)
+                            </label>
+                            <div class="position-relative">
+                                <input
+                                    type="password"
+                                    class="eco-form-control"
+                                    id="editNewPassword"
+                                    name="new_password"
+                                    placeholder="Leave blank to keep current password"
+                                >
+
+                            </div>
+                        </div>
+
+                        <div class="eco-form-group">
+                            <label for="editConfirmPassword" class="eco-form-label">
+                                <i class="fas fa-key"></i>
+                                Confirm New Password
+                            </label>
+                            <div class="position-relative">
+                                <input
+                                    type="password"
+                                    class="eco-form-control"
+                                    id="editConfirmPassword"
+                                    name="confirm_password"
+                                    placeholder="Confirm your new password"
+                                >
+              
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn-eco-modal-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-eco-modal-primary" id="editProfileBtn">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content wrapper -->
+    <div class="main-content">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <script>
+            const flashed_messages = {{ messages | tojson | safe }};
+            flashed_messages.forEach(msg => alert(msg));
+        </script>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Add scrolled class to navbar on scroll
+        window.addEventListener("scroll", function () {
+            const navbar = document.querySelector(".eco-navbar");
+            if (window.scrollY > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+        });
+
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update theme toggle button
+            const themeIcon = document.getElementById('themeIconNav');
+            const themeText = document.getElementById('themeTextNav');
+            
+            if (newTheme === 'dark') {
+                themeIcon.className = 'theme-icon-nav fas fa-sun';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'theme-icon-nav fas fa-moon';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const themeIcon = document.getElementById('themeIconNav');
+            const themeText = document.getElementById('themeTextNav');
+            
+            if (savedTheme === 'dark') {
+                themeIcon.className = 'theme-icon-nav fas fa-sun';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'theme-icon-nav fas fa-moon';
+                themeText.textContent = 'Dark';
+            }
+
+            // Initialize modal functionality
+            initializeModalFunctionality();
+        });
+
+        // Switch between login and register modals
+        function switchToRegister() {
+            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+            const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+            
+            if (loginModal) {
+                loginModal.hide();
+            }
+            
+            setTimeout(() => {
+                registerModal.show();
+            }, 300);
+        }
+
+        function switchToLogin() {
+            const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            
+            if (registerModal) {
+                registerModal.hide();
+            }
+            
+            setTimeout(() => {
+                loginModal.show();
+            }, 300);
+        }
+
+        // Initialize modal functionality
+        function initializeModalFunctionality() {
+            // Login form handling
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginModal = document.getElementById('loginModal');
+            
+            if (loginForm && loginBtn) {
+                loginForm.addEventListener('submit', function(e) {
+                    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Signing In...';
+                    loginBtn.disabled = true;
+                    loginBtn.classList.add('loading');
+                });
+            }
+            
+            // Register form handling
+            const registerForm = document.getElementById('registerForm');
+            const registerBtn = document.getElementById('registerBtn');
+            const registerModal = document.getElementById('registerModal');
+            
+            if (registerForm && registerBtn) {
+                registerForm.addEventListener('submit', function(e) {
+                    registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Creating Account...';
+                    registerBtn.disabled = true;
+                    registerBtn.classList.add('loading');
+                });
+            }
+            
+            // Reset login form when modal is closed
+            if (loginModal && loginForm) {
+                loginModal.addEventListener('hidden.bs.modal', function() {
+                    loginForm.reset();
+                    if (loginBtn) {
+                        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i>Sign In';
+                        loginBtn.disabled = false;
+                        loginBtn.classList.remove('loading');
+                    }
+                    // Remove validation classes
+                    const inputs = loginForm.querySelectorAll('.eco-form-control');
+                    inputs.forEach(input => {
+                        input.classList.remove('is-invalid', 'is-valid');
+                    });
+                });
+                
+                // Auto-focus on username when login modal opens
+                loginModal.addEventListener('shown.bs.modal', function() {
+                    const usernameInput = document.getElementById('loginUsername');
+                    if (usernameInput) usernameInput.focus();
+                });
+            }
+            
+            // Reset register form when modal is closed
+            if (registerModal && registerForm) {
+                registerModal.addEventListener('hidden.bs.modal', function() {
+                    registerForm.reset();
+                    if (registerBtn) {
+                        registerBtn.innerHTML = '<i class="fas fa-user-plus"></i>Create Account';
+                        registerBtn.disabled = false;
+                        registerBtn.classList.remove('loading');
+                    }
+                    // Remove validation classes
+                    const inputs = registerForm.querySelectorAll('.eco-form-control');
+                    inputs.forEach(input => {
+                        input.classList.remove('is-invalid', 'is-valid');
+                    });
+                });
+                
+                // Auto-focus on username when register modal opens
+                registerModal.addEventListener('shown.bs.modal', function() {
+                    const usernameInput = document.getElementById('registerUsername');
+                    if (usernameInput) usernameInput.focus();
+                });
+            }
+
+            // Add real-time validation
+            addFormValidation();
+            
+            // Edit Profile form handling
+            const editProfileForm = document.getElementById('editProfileForm');
+            const editProfileBtn = document.getElementById('editProfileBtn');
+            const editProfileModal = document.getElementById('editProfileModal');
+            
+            if (editProfileForm && editProfileBtn) {
+                editProfileForm.addEventListener('submit', function(e) {
+                    // Validate passwords match if new password is provided
+                    const newPassword = document.getElementById('editNewPassword').value;
+                    const confirmPassword = document.getElementById('editConfirmPassword').value;
+                    
+                    if (newPassword && newPassword !== confirmPassword) {
+                        e.preventDefault();
+                        alert('New password and confirmation do not match.');
+                        return;
+                    }
+                    
+                    editProfileBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Saving...';
+                    editProfileBtn.disabled = true;
+                    editProfileBtn.classList.add('loading');
+                });
+            }
+            
+            // Reset edit profile form when modal is closed
+            if (editProfileModal && editProfileForm) {
+                editProfileModal.addEventListener('hidden.bs.modal', function() {
+                    editProfileForm.reset();
+                    // Reset username to current value
+                    const usernameInput = document.getElementById('editUsername');
+                    if (usernameInput) {
+                        usernameInput.value = usernameInput.getAttribute('value');
+                    }
+                    if (editProfileBtn) {
+                        editProfileBtn.innerHTML = '<i class="fas fa-save"></i>Save Changes';
+                        editProfileBtn.disabled = false;
+                        editProfileBtn.classList.remove('loading');
+                    }
+                    // Remove validation classes
+                    const inputs = editProfileForm.querySelectorAll('.eco-form-control');
+                    inputs.forEach(input => {
+                        input.classList.remove('is-invalid', 'is-valid');
+                    });
+                });
+                
+                // Auto-focus on current password when edit profile modal opens
+                editProfileModal.addEventListener('shown.bs.modal', function() {
+                    const currentPasswordInput = document.getElementById('editCurrentPassword');
+                    if (currentPasswordInput) currentPasswordInput.focus();
+                });
+            }
+        }
+
+        // Add form validation
+        function addFormValidation() {
+            const usernameInputs = document.querySelectorAll('#loginUsername, #registerUsername');
+            const passwordInputs = document.querySelectorAll('#loginPassword, #registerPassword');
+
+            usernameInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const value = this.value.trim();
+                    if (value.length >= 3) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else if (value.length > 0) {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    } else {
+                        this.classList.remove('is-valid', 'is-invalid');
+                    }
+                });
+            });
+
+            passwordInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const value = this.value;
+                    if (value.length >= 6) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else if (value.length > 0) {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    } else {
+                        this.classList.remove('is-valid', 'is-invalid');
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
