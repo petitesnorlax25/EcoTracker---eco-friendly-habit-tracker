@@ -1218,7 +1218,7 @@
 
   .checklist-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
   }
@@ -1804,6 +1804,31 @@
   }
 
 
+/* Accessibility: Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Mobile tweaks for better touch targets */
+@media (max-width: 576px) {
+  .checklist-checkbox label {
+    width: 36px;
+    height: 36px;
+  }
+  .checklist-checkbox label i {
+    font-size: 1rem;
+  }
+  .habit-item {
+    gap: 0.85rem;
+  }
+  .eco-card {
+    padding: 1.5rem;
+  }
+}
 </style>
 
 <div class="dashboard-container">
@@ -1950,7 +1975,6 @@
             <div
               class="progress-fill"
               id="progressFill"
-              style="width: {{ (habits_this_week / goals.weekly_goal * 100) if goals.weekly_goal > 0 else 0 }}%;"
             >
               <div class="progress-text" id="progressText">
                 {{ habits_this_week }} / {{ goals.weekly_goal }}
@@ -2016,7 +2040,6 @@
               <div
                 class="checklist-fill"
                 id="checklistFill"
-                style="width: {{ (completed_today|length / predefined_habits|length * 100) if predefined_habits else 0 }}%;"
               ></div>
             </div>
           </div>
@@ -2055,18 +2078,18 @@
                 <button
                   type="button"
                   class="btn-checklist-edit"
-                  onclick="editChecklistHabit('{{ habit.id }}', '{{ habit.action }}', '{{ habit.category or '' }}')"
                   title="Edit Habit"
+                  aria-label="Edit Habit"
                 >
-                  <i class="fas fa-edit"></i>
+                  <i class="fas fa-edit" aria-hidden="true"></i>
                 </button>
                 <button
                   type="button"
                   class="btn-checklist-delete"
-                  onclick="deleteChecklistHabit('{{ habit.id }}', '{{ habit.action }}')"
                   title="Delete Habit"
+                  aria-label="Delete Habit"
                 >
-                  <i class="fas fa-trash"></i>
+                  <i class="fas fa-trash" aria-hidden="true"></i>
                 </button>
               </div>
             </div>
@@ -2794,6 +2817,13 @@
 </div>
 
 <!-- JavaScript for enhanced functionality -->
+<!-- Progress meta for JS without embedding raw Jinja into JS objects -->
+<div id="progress-data"
+     data-today-count="{{ habits_today or 0 }}"
+     data-daily-goal="{{ goals.daily_goal or 3 }}"
+     data-week-count="{{ habits_this_week or 0 }}"
+     data-weekly-goal="{{ goals.weekly_goal or 10 }}"
+     hidden></div>
 <script>
   // Scroll to checklist function
   function scrollToChecklist() {
@@ -2918,16 +2948,17 @@
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-      // Progress data for dynamic switching
+      // Progress data for dynamic switching (read from data-* to avoid templating inside JS)
+      const pd = document.getElementById('progress-data');
       const progressData = {
           today: {
-              count: {{ habits_today or 0 }},
-              goal: {{ goals.daily_goal or 3 }},
+              count: Number(pd?.dataset.todayCount || 0),
+              goal: Number(pd?.dataset.dailyGoal || 0),
               title: "🌱 Today's Progress"
           },
           week: {
-              count: {{ habits_this_week or 0 }},
-              goal: {{ goals.weekly_goal or 10 }},
+              count: Number(pd?.dataset.weekCount || 0),
+              goal: Number(pd?.dataset.weeklyGoal || 0),
               title: "🌱 This Week's Progress"
           }
       };
@@ -3002,6 +3033,8 @@
 
       // Initialize with week view (default)
       updateProgress('week');
+      // Initialize checklist progress bar
+      updateChecklistProgress();
 
       // Enhanced filtering functionality
       const searchInput = document.getElementById('searchInput');
@@ -3239,6 +3272,34 @@
               }
           });
       }
+
+      // Event delegation for checklist action buttons (no inline JS)
+      document.addEventListener('click', function(e) {
+          const editBtn = e.target.closest('.btn-checklist-edit');
+          if (editBtn) {
+              const item = editBtn.closest('.checklist-item');
+              if (item) {
+                  const habitId = item.getAttribute('data-habit-id');
+                  const action = (item.querySelector('.checklist-text')?.textContent || '').trim();
+                  const category = (item.querySelector('.checklist-category')?.textContent || '').trim();
+                  if (habitId) {
+                      editChecklistHabit(habitId, action, category);
+                  }
+              }
+              return;
+          }
+          const delBtn = e.target.closest('.btn-checklist-delete');
+          if (delBtn) {
+              const item = delBtn.closest('.checklist-item');
+              if (item) {
+                  const habitId = item.getAttribute('data-habit-id');
+                  const action = (item.querySelector('.checklist-text')?.textContent || '').trim();
+                  if (habitId) {
+                      deleteChecklistHabit(habitId, action);
+                  }
+              }
+          }
+      });
   });
 
 

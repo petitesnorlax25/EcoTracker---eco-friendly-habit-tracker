@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2d5016" />
     <title>EcoTracker - Eco-Friendly Habit Tracker</title>
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -16,6 +17,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet"
     />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -90,6 +92,10 @@
             --overlay-dark: rgba(0, 0, 0, 0.6);
             --glass-bg: rgba(30, 30, 30, 0.9);
             --glass-border: rgba(100, 181, 246, 0.3);
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -802,6 +808,59 @@
             margin-top: 70px;
         }
 
+        /* Skip link for accessibility */
+        .skip-link {
+            position: absolute;
+            left: 8px;
+            top: -40px;
+            background: var(--eco-accent);
+            color: var(--text-inverse);
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            z-index: 2000;
+            transition: top 0.2s ease;
+        }
+        .skip-link:focus {
+            top: 8px;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(127,176,105,0.35);
+        }
+
+        /* Mobile bottom navigation (visible only on small screens) */
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 1px solid var(--card-border);
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+            z-index: 1030;
+            display: none; /* default hidden; shown via media query */
+        }
+        .mobile-bottom-nav .nav-link {
+            padding: 12px 10px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+        .mobile-bottom-nav .nav-link i {
+            display: block;
+            font-size: 1.25rem;
+            color: var(--eco-accent);
+        }
+        .mobile-bottom-nav .nav-link:focus,
+        .mobile-bottom-nav .nav-link:hover {
+            background: var(--overlay-light);
+            color: var(--text-primary);
+        }
+
+        /* Ensure main content not covered by bottom nav on small screens */
+        @media (max-width: 576px) {
+            body { padding-bottom: 72px; }
+            .mobile-bottom-nav { display: block; }
+        }
+
         /* Form validation styles */
         .eco-form-control.is-invalid {
             border-color: var(--eco-danger);
@@ -891,6 +950,7 @@
     </style>
 </head>
 <body>
+    <a href="#main" class="skip-link">Skip to content</a>
     <nav class="navbar navbar-expand-lg eco-navbar fixed-top">
         <div class="container">
             <!-- Brand -->
@@ -1240,17 +1300,110 @@
     </div>
 
     <!-- Main content wrapper -->
-    <div class="main-content">
-        {% with messages = get_flashed_messages() %}
+    <div id="main" class="main-content" role="main">
+        {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
+        <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;"></div>
+        <div id="flashed-data" data-messages='{{ messages | tojson | safe }}' hidden></div>
         <script>
-            const flashed_messages = {{ messages | tojson | safe }};
-            flashed_messages.forEach(msg => alert(msg));
+            (function () {
+                const dataEl = document.getElementById('flashed-data');
+                let flashed = [];
+                try {
+                    flashed = JSON.parse((dataEl && dataEl.dataset && dataEl.dataset.messages) ? dataEl.dataset.messages : '[]');
+                } catch (e) {
+                    flashed = [];
+                }
+                const container = document.getElementById('toastContainer') || (function () {
+                    const d = document.createElement('div');
+                    d.id = 'toastContainer';
+                    d.className = 'toast-container position-fixed top-0 end-0 p-3';
+                    d.style.zIndex = 1100;
+                    document.body.appendChild(d);
+                    return d;
+                })();
+                flashed.forEach(function (entry) {
+                    // entry can be [category, message] when with_categories=true
+                    var category = Array.isArray(entry) ? entry[0] : 'info';
+                    var msg = Array.isArray(entry) ? entry[1] : entry;
+
+                    var colorClass =
+                        category === 'success' ? 'text-bg-success' :
+                        category === 'error'   ? 'text-bg-danger'  :
+                        category === 'warning' ? 'text-bg-warning' :
+                        'text-bg-primary';
+
+                    var toastEl = document.createElement('div');
+                    toastEl.className = 'toast align-items-center border-0 ' + colorClass;
+                    toastEl.setAttribute('role', 'alert');
+                    toastEl.setAttribute('aria-live', 'assertive');
+                    toastEl.setAttribute('aria-atomic', 'true');
+
+                    toastEl.innerHTML = '<div class="d-flex">' +
+                        '<div class="toast-body"></div>' +
+                        '<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>' +
+                        '</div>';
+
+                    // Use textContent to avoid XSS
+                    toastEl.querySelector('.toast-body').textContent = msg;
+
+                    container.appendChild(toastEl);
+                    try {
+                        new bootstrap.Toast(toastEl, { delay: 3500 }).show();
+                    } catch (e) {
+                        // Fallback if Bootstrap not ready yet
+                        setTimeout(function () {
+                            try { new bootstrap.Toast(toastEl, { delay: 3500 }).show(); } catch (_) {}
+                        }, 200);
+                    }
+                });
+                // cleanup
+                if (dataEl && dataEl.parentNode) dataEl.parentNode.removeChild(dataEl);
+            })();
         </script>
         {% endif %}
         {% endwith %}
         {% block content %}{% endblock %}
     </div>
+
+    {% if 'username' in session %}
+    <nav class="mobile-bottom-nav d-sm-none" aria-label="Primary mobile">
+        <div class="container">
+            <ul class="nav justify-content-between">
+                <li class="nav-item">
+                    <a class="nav-link" href="#dashboard" aria-label="Dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="visually-hidden">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#progress" aria-label="Progress">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="visually-hidden">Progress</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#checklist" aria-label="Checklist">
+                        <i class="fas fa-check-square"></i>
+                        <span class="visually-hidden">Checklist</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#habits" aria-label="Recent actions">
+                        <i class="fas fa-history"></i>
+                        <span class="visually-hidden">Recent actions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0)" onclick="toggleTheme()" aria-label="Toggle theme">
+                        <i class="fas fa-adjust"></i>
+                        <span class="visually-hidden">Toggle theme</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>

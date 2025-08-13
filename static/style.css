@@ -1,0 +1,220 @@
+/* CSS Custom Properties for Theming */
+:root {
+  /* Light Theme Colors */
+  --eco-primary: #2d5016;
+  --eco-secondary: #4a7c59;
+  --eco-accent: #7fb069;
+  --eco-light: #a7c957;
+  --eco-success: #28a745;
+  --eco-warning: #ffc107;
+  --eco-danger: #dc3545;
+
+  /* Light Theme Backgrounds */
+  --bg-primary: #f8fffe;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f0f9f0;
+  --bg-gradient: linear-gradient(
+    135deg,
+    #f8fffe 0%,
+    #e8f5e8 50%,
+    #f0f9f0 100%
+  );
+  --bg-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a7c957' fill-opacity='0.03'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+
+  /* Light Theme Text */
+  --text-primary: #2d5016;
+  --text-secondary: #4a7c59;
+  --text-muted: #6c757d;
+  --text-inverse: #ffffff;
+
+  /* Light Theme Cards */
+  --card-bg: #ffffff;
+  --card-border: rgba(127, 176, 105, 0.1);
+  --card-shadow: 0 8px 32px rgba(45, 80, 22, 0.08);
+  --card-shadow-hover: 0 16px 48px rgba(45, 80, 22, 0.12);
+
+  /* Light Theme Interactive Elements */
+  --input-bg: #f8f9fa;
+  --input-border: #e9ecef;
+  --input-focus: var(--eco-accent);
+  --button-primary: var(--eco-accent);
+  --button-secondary: #f8f9fa;
+
+  /* Light Theme Overlays */
+  --overlay-light: rgba(255, 255, 255, 0.1);
+  --overlay-dark: rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.18);
+}
+
+/* Dark Theme Colors */
+[data-theme="dark"] {
+  --eco-primary: #a7c957;
+  --eco-secondary: #7fb069;
+  --eco-accent: #9bb85c;
+  --eco-light: #b8d46a;
+  --eco-success: #4caf50;
+  --eco-warning: #ff9800;
+  --eco-danger: #f44336;
+
+  /* Dark Theme Backgrounds */
+  --bg-primary: #0f1419;
+  --bg-secondary: #1a1f2e;
+  --bg-tertiary: #252b3a;
+  --bg-gradient: linear-gradient(
+    135deg,
+    #0f1419 0%,
+    #1a1f2e 50%,
+    #252b3a 100%
+  );
+  --bg-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a7c957' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+
+  /* Dark Theme Text */
+  --text-primary: #e8f5e8;
+  --text-secondary: #a7c957;
+  --text-muted: #8a9ba8;
+  --text-inverse: #0f1419;
+
+  /* Dark Theme Cards */
+  --card-bg: #1a1f2e;
+  --card-border: rgba(167, 201, 87, 0.15);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.4);
+
+  /* Dark Theme Interactive Elements */
+  --input-bg: #252b3a;
+  --input-border: #3a4553;
+  --input-focus: var(--eco-accent);
+  --button-primary: var(--eco-accent);
+  --button-secondary: #252b3a;
+
+  /* Dark Theme Overlays */
+  --overlay-light: rgba(255, 255, 255, 0.05);
+  --overlay-dark: rgba(0, 0, 0, 0.3);
+  --glass-bg: rgba(26, 31, 46, 0.7);
+  --glass-border: rgba(167, 201, 87, 0.2);
+}
+
+/* Base Styles - Optimized transitions */
+.transition-enabled {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Apply transitions only to specific elements */
+.eco-card,
+.habit-item,
+.analytics-item,
+.btn-eco-primary,
+.btn-eco-secondary {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  background: var(--bg-gradient), var(--bg-pattern);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text-primary);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  line-height: 1.6;
+  padding-top: 70px;
+}
+
+/* Enhanced Dashboard Container */
+.dashboard-container {
+  padding: 2rem 0;
+  position: relative;
+}
+
+.dashboard-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-pattern);
+  opacity: 0.5;
+  z-index: -1;
+  animation: float 30s infinite linear;
+}
+
+@keyframes float {
+  0% {
+    transform: translateX(-50px) translateY(-50px);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px);
+  }
+}
+
+.section {
+  scroll-margin-top: 100px;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+/* Enhanced Welcome Header */
+.welcome-header {
+  background: linear-gradient(
+    135deg,
+    var(--eco-primary) 0%,
+    var(--eco-secondary) 100%
+  );
+  color: var(--text-inverse);
+  padding: 3rem 2rem;
+  border-radius: 24px;
+  margin-bottom: 2rem;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+
+.welcome-header::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: var(--bg-pattern);
+  opacity: 0.1;
+  animation: float 20s infinite linear;
+}
+
+.welcome-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+}
+
+.welcome-header h1 {
+  font-size: 2.75rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, #ffffff, #f0f9f0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.welcome-header .subtitle {
+  font-size: 1.2rem;
+  opacity: 0.95;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 2rem;
+}

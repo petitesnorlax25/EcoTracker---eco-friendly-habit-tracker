@@ -4,9 +4,31 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from datetime import datetime, timedelta
 import uuid
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from a .env file if present (for local dev)
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'super_secret_eco_friendly_habit_tracker_key'
+app.secret_key = os.environ.get('SECRET_KEY', 'super_secret_eco_friendly_habit_tracker_key')
+
+# Secure session cookies (configure FLASK_SECURE_COOKIES=1 in production)
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    # Default to insecure for local HTTP dev; set FLASK_SECURE_COOKIES=1 in prod
+    SESSION_COOKIE_SECURE=True if os.environ.get('FLASK_SECURE_COOKIES', '0') == '1' else False
+)
+
+# Basic security headers
+@app.after_request
+def set_security_headers(resp):
+    resp.headers['X-Content-Type-Options'] = 'nosniff'
+    resp.headers['X-Frame-Options'] = 'DENY'
+    resp.headers['Referrer-Policy'] = 'no-referrer-when-downgrade'
+    resp.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+    return resp
 
 DATA_FILE = 'habits.json'
 USERS_FILE = 'users.json'
@@ -314,12 +336,21 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].strip()
         password = request.form['password']
         users = load_users()
 
+        # Server-side validation
+        if not username or len(username) < 3 or len(username) > 50:
+            flash('Username must be between 3 and 50 characters.', 'error')
+            return redirect(url_for('index'))
+
+        if len(password) < 6:
+            flash('Password must be at least 6 characters long.', 'error')
+            return redirect(url_for('index'))
+
         if username in users:
-            flash('Username already exists.')
+            flash('Username already exists.', 'error')
             return redirect(url_for('index'))
 
         # 🔐 Hash the password before storing
@@ -327,23 +358,23 @@ def register():
         users[username] = hashed_password
         save_users(users)
 
-        flash('Registration successful! You can now log in.')
+        flash('Registration successful! You can now log in.', 'success')
         return redirect(url_for('index'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].strip()
         password = request.form['password']
         users = load_users()
 
         if username in users and check_password_hash(users[username], password):
             session['username'] = username
-            flash('Logged in successfully.')
+            flash('Logged in successfully.', 'success')
             return redirect(url_for('index'))
         else:
-            flash('Invalid username or password.')
+            flash('Invalid username or password.', 'error')
             return redirect(url_for('index'))
 
 
@@ -692,19 +723,42 @@ def add_custom_habit():
     if 'username' not in session:
         return jsonify({'error': 'Not authenticated'}), 401
 
-    data = request.get_json()
-    habit_name = data.get('habit_name')
-    category = data.get('category', 'other')
+    data = request.get_json() or {}
+    habit_name = (data.get('habit_name') or '').strip()
+    category = (data.get('category') or 'other').strip()
     username = session['username']
     today = datetime.now().date().isoformat()
 
+    # Server-side validation and normalization
     if not habit_name:
         return jsonify({'error': 'Habit name required'}), 400
+    if len(habit_name) > 100:
+        return jsonify({'error': 'Habit name too long (max 100)'}), 400
+
+    # Restrict category to known values; fallback to 'other'
+    allowed_categories = {
+        "Energy Saving",
+        "Water Conservation",
+        "Eco Transport",
+        "Waste Reduction",
+        "Recycling",
+        "Sustainable Food",
+        "Reusables & Alternatives",
+        "Gardening / Composting",
+        "Mindful Consumption",
+        "Eco Cleaning Products",
+        "Advocacy / Awareness",
+        "Sustainable Shopping",
+        "Nature & Biodiversity",
+        "Other"
+    }
+    category = category if category in allowed_categories else 'other'
 
     habits = load_habits()
 
-    # Check if it already exists
-    if any(h for h in habits if h['username'] == username and h['action'].lower() == habit_name.lower()):
+    # Check if it already exists (case-insensitive, trimmed)
+    normalized_name = habit_name.lower()
+    if any(h for h in habits if h['username'] == username and h['action'].strip().lower() == normalized_name):
         return jsonify({'error': 'Habit already exists'}), 400
 
     habit_id = str(uuid.uuid4())
@@ -842,18 +896,18 @@ def get_habit_category(habit_name):
 
 @app.route('/get_today_habits')
 def get_today_habits():
-    """Get habits completed today for the current user"""
+    """Get habits completed today for the current user (from history for accuracy)"""
     if 'username' not in session:
         return jsonify({'error': 'Not authenticated'}), 401
     
     username = session['username']
     today = datetime.now().date().isoformat()
-    all_habits = load_habits()
+    history = load_habits_history()
     
-    # Get today's completed habits for this user
+    # Get today's completed habits for this user from history
     today_habits = [
-        habit['action'] for habit in all_habits
-        if (habit.get('username') == username and 
+        habit['action'] for habit in history
+        if (habit.get('username') == username and
             habit.get('date') == today)
     ]
     
@@ -886,5 +940,10 @@ def get_habit_history_api():
 
     return jsonify(chart_data)
 
+@app.route('/healthz')
+def healthz():
+    return jsonify({'status': 'ok'}), 200
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    debug_mode = os.environ.get('FLASK_DEBUG', '1') == '1'
+    app.run(debug=debug_mode)
